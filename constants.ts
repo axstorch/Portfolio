@@ -56,7 +56,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: "Crave",
     description: "A fully functional cross-platform app designed to streamline food court experiences. Focuses on reducing wait times and boosting revenue for our.",
     technologies: ["User research", "Market analysis", "Wireframing", "Agile Methodology", "UX understanding"],
-    image: "public/assets/linkedin/LOGO.jpg",
+    image: "/assets/linkedin/LOGO.jpg",
     imagePlaceholder: "bg-stone-300",
     url: "https://github.com/axstorch/foodcourt-expo"
   },
@@ -65,7 +65,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     title: "WeatherForU",
     description: "A dynamic weather dashboard deployed for real-time updates. Features intuitive data visualization for climatic conditions.",
     technologies: ["Agile Mgmt", "API Integration", "AI", "UX"],
-    image: "public/assets/linkedin/Project2.png",
+    image: "/assets/linkedin/Project2.png",
     imagePlaceholder: "bg-stone-400",
     url: "https://weatherfor-u.vercel.app/"
   }
@@ -81,7 +81,7 @@ export const LINKEDIN_POSTS = [
     likes: 80,
     comments: 12,
     url: 'https://www.linkedin.com/feed/update/urn:li:share:7402742225333338112',
-    image: "public/assets/linkedin/Post1.png",
+    image: "/assets/linkedin/Post1.png",
   },
 
   {
@@ -93,7 +93,7 @@ export const LINKEDIN_POSTS = [
     likes: 43,
     comments: 9,
     url: 'https://www.linkedin.com/feed/update/urn:li:share:7390306392219291648',
-    image: "public/assets/linkedin/Post2.png",
+    image: "/assets/linkedin/Post2.png",
   },
 
   {
@@ -104,7 +104,7 @@ export const LINKEDIN_POSTS = [
     likes: 57,
     comments: 4,
     url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7331336647088713730',
-    image: "public/assets/linkedin/Post4.png",
+    image: "/assets/linkedin/Post4.png",
   },
 
   {
@@ -115,7 +115,7 @@ export const LINKEDIN_POSTS = [
     likes: 26,
     comments: 1,
     url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7330974262901596163',
-    image: "public/assets/linkedin/Post3.png",
+    image: "/assets/linkedin/Post3.png",
   },
 
 
