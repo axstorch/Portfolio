@@ -19,10 +19,10 @@ const Contact: React.FC = () => {
           <a href={RESUME_DATA.linkedin} target="_blank" className="uppercase tracking-widest text-xs font-bold flex items-center gap-1 hover:opacity-60">
             LinkedIn <ArrowUpRight size={12} />
           </a>
-          <a href="#" className="uppercase tracking-widest text-xs font-bold flex items-center gap-1 hover:opacity-60">
+          <a href={RESUME_DATA.Github} target="_blank" className="uppercase tracking-widest text-xs font-bold flex items-center gap-1 hover:opacity-60">
             GitHub <ArrowUpRight size={12} />
           </a>
-          <a href="#" className="uppercase tracking-widest text-xs font-bold flex items-center gap-1 hover:opacity-60">
+          <a href={RESUME_DATA.Resune} target="_blank" className="uppercase tracking-widest text-xs font-bold flex items-center gap-1 hover:opacity-60">
             Resume <ArrowUpRight size={12} />
           </a>
         </div>
