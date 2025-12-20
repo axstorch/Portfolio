@@ -60,7 +60,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     technologies: ["User research", "Market analysis", "Wireframing", "Agile Methodology", "UX understanding"],
     image: "/assets/linkedin/LOGO.jpg",
     imagePlaceholder: "bg-stone-300",
-    url: "https://github.com/axstorch/foodcourt-expo"
+    url: "https://drive.google.com/file/d/1d00uA8e6ybdiTNBo--1OFnLhWES8uB4p/view?usp=drivesdk"
   },
   {
     id: "p2",

@@ -6,7 +6,7 @@ const BTSSection: React.FC = () => {
     <section id="bts" className="py-24 px-6 md:px-12 bg-[#EBEAE5]">
       <div className="mb-16">
         <h2 className="text-4xl md:text-5xl mb-4 italic">Behind the Scenes</h2>
-        <p className="text-[#666666]">Just what an HR wats to see</p>
+        <p className="text-[#666666]">Just what an HR wants to see</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-3 gap-3 auto-rows-[350px]">
