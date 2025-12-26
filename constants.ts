@@ -56,7 +56,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
   {
     id: "p1",
     title: "Crave",
-    description: "A fully functional cross-platform app designed to streamline food court experiences. Focuses on reducing wait times and boosting revenue for our.",
+    description: "A fully functional cross-platform app designed to streamline food court experiences. Focuses on reducing wait times and boosting revenue for our university.",
     technologies: ["User research", "Market analysis", "Wireframing", "Agile Methodology", "UX understanding"],
     image: "/assets/linkedin/LOGO.jpg",
     imagePlaceholder: "bg-stone-300",
@@ -210,7 +210,7 @@ export const SKILLS_DATA: SkillCategory[] = [
   },
   {
     category: "Technical/Tools",
-    skills: ["MySQL", "API Integration", "Data Visualization", "Insight Generation", "Notion", "Canva", "Powerpoint", "Excel", "Python"]
+    skills: ["MySQL", "n8n", "API Integration", "Data Visualization", "Insight Generation", "Notion", "Canva", "Powerpoint", "Excel", "Python"]
   },
   {
     category: "Leadership",

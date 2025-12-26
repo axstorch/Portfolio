@@ -9,7 +9,6 @@ const Skills: React.FC = () => {
           <h2 className="text-4xl md:text-6xl mb-8 font-serif">Expertise & <br /> Capabilities</h2>
           <p className="text-white/60 max-w-sm leading-relaxed">
             A synthesis of technical engineering and strategic product thinking.
-            Always learning, always refining.
           </p>
         </div>
 
