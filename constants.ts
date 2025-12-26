@@ -70,7 +70,20 @@ export const PROJECTS_DATA: ProjectItem[] = [
     image: "/assets/linkedin/Project2.png",
     imagePlaceholder: "bg-stone-400",
     url: "https://weatherfor-u.vercel.app/"
+  },
+
+  {
+    id: "p3",
+    title: "Linkedin-Automation",
+    description: "An automation built using n8n that connects with my telegram account to share latest job postings (filters applied) directly to me.",
+    technologies: ["n8n", "Automation", "Telegram-bot"],
+    image: "/assets/linkedin/automation.png",
+    imagePlaceholder: "bg-stone-400",
+    url: "https://github.com/axstorch/LinkedIn-job-alert-automated"
+
   }
+
+
 ];
 
 export const LINKEDIN_POSTS = [
@@ -87,7 +100,7 @@ export const LINKEDIN_POSTS = [
   },
 
 
-    {
+  {
     id: '7409573688792014851',
     title: 'A simple UI change that can ease the lives of millions!',
     excerpt:
@@ -116,7 +129,7 @@ export const LINKEDIN_POSTS = [
     id: '7407295316380737536',
     title: 'How our product can save time, boost revenue and save you from hunger? ',
     excerpt:
-    'Ever stood in a long queue at a food court, hungry and frustrated? Our app Crave is here to change that!',
+      'Ever stood in a long queue at a food court, hungry and frustrated? Our app Crave is here to change that!',
     date: 'Dec 2024',
     likes: 31,
     comments: 3,
