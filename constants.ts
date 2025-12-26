@@ -78,12 +78,50 @@ export const LINKEDIN_POSTS = [
     id: '7402742225333338112',
     title: 'Driving adoption with the help of cute balloons and bracelets',
     excerpt:
-      'I noticed a marketing strategy in my campus that wokred... too well!',
+      'Noticed a marketing strategy in my campus that worked... too well!',
     date: 'Dec 2024',
     likes: 80,
     comments: 12,
     url: 'https://www.linkedin.com/feed/update/urn:li:share:7402742225333338112',
     image: "/assets/linkedin/Post1.png",
+  },
+
+
+    {
+    id: '7409573688792014851',
+    title: 'A simple UI change that can ease the lives of millions!',
+    excerpt:
+      'When you go through your payment history, all you see are random names. You scratch your head, wondering 𝐰𝐡𝐲 𝐲𝐨𝐮 𝐩𝐚𝐢𝐝 𝐊𝐢𝐫𝐚𝐧 𝐋𝐚𝐥 ₹𝟐𝟒𝟓?',
+    date: 'Dec 2024',
+    likes: 28,
+    comments: 12,
+    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7409573688792014851',
+    image: "/assets/linkedin/UPI.png",
+  },
+
+  {
+    id: '7408625085772668928',
+    title: 'Why scroll through a list of job postings when you can have them come to you?',
+    excerpt:
+      'Built an automation using n8n that connects with telegram to share latest job postings directly to me.',
+    date: 'Dec 2024',
+    likes: 19,
+    comments: 4,
+    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7408625085772668928',
+    image: "/assets/linkedin/automation.png",
+  },
+
+
+  {
+    id: '7407295316380737536',
+    title: 'How our product can save time, boost revenue and save you from hunger? ',
+    excerpt:
+    'Ever stood in a long queue at a food court, hungry and frustrated? Our app Crave is here to change that!',
+    date: 'Dec 2024',
+    likes: 31,
+    comments: 3,
+    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7407295316380737536',
+    image: "/assets/linkedin/crave2.png",
   },
 
   {
@@ -138,7 +176,7 @@ export const BTS_IMAGES: BTSImage[] = [
   },
   {
     id: "b2",
-    caption: "probably writing something important",
+    caption: "Writing something important",
     aspectRatio: "square",
     image: "/assets/bts/bts2.jpg",
   },

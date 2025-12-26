@@ -20,6 +20,7 @@ const CERTIFICATIONS = [
     {
         title: 'On-Premise Data Visualization Program',
         issuer: 'Coursera',
+        url: 'https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Tata/MyXvBcppsW2FkNYCX_Tata_bm7RavEb24C2zq9as_1691496892553_completion_certificate.pdf'
     },
     {
         title: 'Project Planning: Putting it all together',
