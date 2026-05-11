@@ -103,7 +103,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
   {
     id: "p4",
     title: "AI-Powered ATS Scanner",
-    description: "AI-powered ATS scanner that streamlines recruitment using NLP to match resumes with job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications.",
+    description: "AI-powered ATS scanner that reduces manual resume screening effort by automatically ranking and deduplicating candidates using NLP.",
     technologies: ["n8n", "API Integration", "AI", "LLMs", "Automation", "Data Deduplication"],
     image: "/assets/linkedin/Project3.png",
     imagePlaceholder: "bg-stone-400",
