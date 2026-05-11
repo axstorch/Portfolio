@@ -13,9 +13,25 @@ export const RESUME_DATA = {
 };
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
+
+  {
+    id: "4",
+    role: "Product Intern",
+    company: "Swift Logistics",
+    period: "January 2026 - April 2026",
+    location: "Bangalore, India",
+    description: [
+      "Technical Product Development: Conceptualized and built an internal RCA chatbot and a BigQuery-integrated Looker dashboard, reducing manual debugging effort by 47%.",
+      "Data-Driven Problem Solving: Mapped the seller escalation lifecycle across 300+ cases using BigQuery and MongoDB, identifying root causes to drive a 23% reduction in average resolution time.",
+      "User Research & Insights: Conducted weekly research with 15+ clients and account managers, translating feedback into 25+ actionable engineering tickets and structured product insights.",
+      "Roadmap & Strategy Influence: Analyzed courier allocation workflows to identify 4 core failure patterns, directly influencing engineering roadmap prioritization and reducing repeat escalations.",
+      "Cross-Functional Leadership: Partnered with engineering, data, and business teams to resolve critical bottlenecks, improving shipment lifecycle reliability and resolution speed by 65%."
+    ]
+  },
+
   {
     id: "1",
-    role: "Strategy Consultant Intern",
+    role: "Strategy & Consulting Intern",
     company: "SOR Informatics",
     period: "June 2025 - September 2025",
     location: "Hyderabad, India",
@@ -62,6 +78,18 @@ export const PROJECTS_DATA: ProjectItem[] = [
     imagePlaceholder: "bg-stone-300",
     url: "https://drive.google.com/file/d/1d00uA8e6ybdiTNBo--1OFnLhWES8uB4p/view?usp=drivesdk"
   },
+
+  {
+    id: "p3",
+    title: "Linkedin-Automation",
+    description: "An automation built using n8n that connects with my telegram account to share latest job postings (filters applied) directly to me.",
+    technologies: ["n8n", "Automation", "Telegram-bot"],
+    image: "/assets/linkedin/automation.png",
+    imagePlaceholder: "bg-stone-400",
+    url: "https://github.com/axstorch/LinkedIn-job-alert-automated"
+
+  },
+
   {
     id: "p2",
     title: "WeatherForU",
@@ -73,15 +101,16 @@ export const PROJECTS_DATA: ProjectItem[] = [
   },
 
   {
-    id: "p3",
-    title: "Linkedin-Automation",
-    description: "An automation built using n8n that connects with my telegram account to share latest job postings (filters applied) directly to me.",
-    technologies: ["n8n", "Automation", "Telegram-bot"],
-    image: "/assets/linkedin/automation.png",
+    id: "p4",
+    title: "AI-Powered ATS Scanner",
+    description: "AI-powered ATS scanner that streamlines recruitment using NLP to match resumes with job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications.",
+    technologies: ["n8n", "API Integration", "AI", "LLMs", "Automation"],
+    image: "/assets/linkedin/Project3.png",
     imagePlaceholder: "bg-stone-400",
-    url: "https://github.com/axstorch/LinkedIn-job-alert-automated"
+    url: "https://github.com/axstorch/n8n-recruitment-automation"
 
   }
+
 
 
 ];
@@ -99,6 +128,17 @@ export const LINKEDIN_POSTS = [
     image: "/assets/linkedin/Post1.png",
   },
 
+  {
+    id: '7414255276062740481',
+    title: 'An AI-powered resume screening workflow that streamlines recruitment',
+    excerpt:
+      'Built an AI-powered resume screening workflow using n8n that automatically screens incoming resumes based on job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications (Click for a video demonstration).',
+    date: 'Jan 2026',
+    likes: 30,
+    comments: 9,
+    url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7414255276062740481',
+    image: "/assets/linkedin/Project3.png",
+  },
 
   {
     id: '7409573688792014851',

@@ -48,8 +48,10 @@ const Projects: React.FC = () => {
                 <span className="text-xs uppercase tracking-widest text-[#666666] mb-2 block">0{index + 1}</span>
                 <h3 className="text-3xl md:text-4xl font-serif">{project.title}</h3>
               </div>
-
-              <p className="text-[#666666] leading-relaxed max-w-sm">
+              <p
+                className={`text-[#666666] leading-relaxed max-w-sm w-full ${index % 2 === 1 ? 'text-right' : 'text-left'
+                  }`}
+              >
                 {project.description}
               </p>
 
