@@ -223,7 +223,7 @@ export const BTS_IMAGES: BTSImage[] = [
   },
   {
     id: "b3",
-    caption: "With the Head of Hospitaltiy (In talks for launching Crave)",
+    caption: "With the Head of Hospitality (In talks for launching Crave)",
     aspectRatio: "portrait",
     image: "/assets/bts/bts3.jpg",
   },
