@@ -8,9 +8,9 @@ export const RESUME_DATA = {
   location: "Hyderabad, Telangana, India",
   linkedin: "https://www.linkedin.com/in/akshat-saxena-5513a8258",
   Github: "https://github.com/axstorch",
-  Resune: "https://drive.google.com/file/d/1Ye-W37kHNLRmzGtryg6cORLl_PxkkdRH/view?usp=drive_link",
-  summary: "As a proactive and results-driven final-year student, I thrive on building impactful tech solutions using React, Supabase, and React frameworks such as Expo and Native. With a growing interest in product management, I aim to bridge the gap between user needs and tech solutions, transforming innovative concepts into market-ready products.",
-};
+  Resume: "https://drive.google.com/file/d/1Ye-W37kHNLRmzGtryg6cORLl_PxkkdRH/view?usp=drive_link",
+  summary: "Product intern with 2 internships, 3 shipped PRDs (4/6 features adopted into live roadmaps), 1 built-from-scratch product and 2 automations, proven ability to run end-to-end discovery, translate customer pain into prioritised requirements, and present data-backed roadmap recommendations to leadership.",
+}
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
 
@@ -104,7 +104,7 @@ export const PROJECTS_DATA: ProjectItem[] = [
     id: "p4",
     title: "AI-Powered ATS Scanner",
     description: "AI-powered ATS scanner that streamlines recruitment using NLP to match resumes with job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications.",
-    technologies: ["n8n", "API Integration", "AI", "LLMs", "Automation"],
+    technologies: ["n8n", "API Integration", "AI", "LLMs", "Automation", "Data Deduplication"],
     image: "/assets/linkedin/Project3.png",
     imagePlaceholder: "bg-stone-400",
     url: "https://github.com/axstorch/n8n-recruitment-automation"
