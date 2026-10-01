@@ -1,53 +1,104 @@
 import React from 'react';
-// import PerfectBanner from '../public/assets/Perfect_banner.jpg';
+import { ArrowUpRight, FileText } from 'lucide-react';
+import { Section, Eyebrow } from './Section';
+import { RESUME_DATA } from '../constants';
+import { NAV_HEIGHT } from './Navbar';
 
 const Hero: React.FC = () => {
   return (
-    <section id="about" className="relative min-h-screen pt-24 pb-12 px-6 md:px-12 flex flex-col justify-between">
+    <Section
+      id="about"
+      tone="light"
+      aria-label="Introduction"
+      className="min-h-screen flex flex-col justify-between"
+      style={{ paddingTop: NAV_HEIGHT + 48 }}
+    >
+      <div className="w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-7">
+            <Eyebrow>{RESUME_DATA.title}</Eyebrow>
 
-      {/* Top Text */}
-      <div className="w-full max-w-4xl z-10">
-        <h1 className="text-5xl md:text-7xl lg:text-8xl leading-[0.9] font-medium text-[#1C1C1C] mb-8">
-          Product <br />
-          <span className="italic font-light">Strategy</span> & <br />
-          Execution
-        </h1>
-        <div className="flex flex-col md:flex-row gap-8 md:items-end">
-          <p className="text-sm md:text-base text-[#666666] max-w-sm leading-relaxed uppercase tracking-wide">
-            Identifying real user problems, shipping solutions, and improving adoption through execution.
-          </p>
+            <h1 className="text-4xl md:text-6xl lg:text-7xl leading-[0.92] font-medium mb-6">
+              Product <span className="italic font-light">Strategy</span>
+              <br />&amp; Execution
+            </h1>
+
+            <p className="text-base md:text-base text-[#555] max-w-[60ch] leading-[1.6]">
+              CS graduate and product intern who finds root causes in data and ships fixes.
+            </p>
+          </div>
+
+          {/* Desktop only: sits in the previously empty right half */}
+          <div className="hidden lg:col-span-5 lg:flex lg:flex-col lg:justify-end lg:items-start gap-3">
+            <a
+              href="#work"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#1C1C1C] text-[#F4F4F0] rounded-full text-xs uppercase tracking-widest hover:bg-[#333] transition-colors"
+            >
+              View work
+            </a>
+            <a
+              href={RESUME_DATA.resume}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-6 py-3 border border-[#1C1C1C]/25 rounded-full text-xs uppercase tracking-widest hover:border-[#1C1C1C] transition-colors"
+            >
+              <FileText size={14} /> Resume
+            </a>
+          </div>
+        </div>
+
+        {/* Mobile: stacked under the subline */}
+        <div className="lg:hidden mt-8 flex flex-col sm:flex-row gap-3">
+          <a
+            href="#work"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#1C1C1C] text-[#F4F4F0] rounded-full text-xs uppercase tracking-widest"
+          >
+            View work
+          </a>
+          <a
+            href={RESUME_DATA.resume}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-[#1C1C1C]/25 rounded-full text-xs uppercase tracking-widest"
+          >
+            <FileText size={14} /> Resume <ArrowUpRight size={12} />
+          </a>
         </div>
       </div>
 
-      {/* Main Image Placeholder */}
-      <div className="mt-12 w-full h-[50vh] md:h-[65vh] relative rounded-2xl overflow-hidden group">
+      <div className="mt-12 w-full h-[34vh] md:h-[50vh] relative rounded-2xl overflow-hidden bg-stone-300">
         <img
-          src="/assets/Perfect_banner.jpg" // <-- use imported value
-          alt="Profile banner"
-          className="absolute inset-0 w-full h-full object-cover z-10" // <-- bring image forward
+          src="/assets/Perfect_banner-1024w.webp"
+          srcSet="
+            /assets/Perfect_banner-640w.webp   640w,
+            /assets/Perfect_banner-1024w.webp 1024w,
+            /assets/Perfect_banner-1600w.webp 1600w,
+            /assets/Perfect_banner-2560w.webp 2560w
+          "
+          sizes="(max-width: 768px) 100vw, 92vw"
+          alt="Akshat Saxena at a product pitch event"
+          width={1024}
+          height={390}
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-
-        <div className="absolute inset-0 bg-stone-300/30 z-0 flex items-center justify-center text-stone-400 pointer-events-none">
-          <span className="uppercase tracking-widest text-sm">[Profile Image Placeholder]</span>
-        </div>
       </div>
 
-
-      {/* Bottom Info */}
-      <div className="mt-8 flex justify-between items-end border-t border-[#1C1C1C]/10 pt-4">
-        <div className="hidden md:block">
-          <span className="block text-xs uppercase tracking-widest text-[#666666]">Location</span>
-          <span className="text-sm">Bhubaneswar, IN</span>
+      <div className="mt-8 flex flex-wrap justify-between items-end gap-6 border-t border-[#1C1C1C]/10 pt-4">
+        <div>
+          <span className="block text-xs uppercase tracking-widest text-[#666]">Location</span>
+          <span className="text-sm">{RESUME_DATA.location}</span>
         </div>
         <div>
-          <span className="block text-xs uppercase tracking-widest text-[#666666] text-right">Status</span>
+          <span className="block text-xs uppercase tracking-widest text-[#666] text-right">Status</span>
           <span className="text-sm flex items-center justify-end gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+            <span className="w-2 h-2 bg-green-600 rounded-full" aria-hidden="true"></span>
             Open for Roles
           </span>
         </div>
       </div>
-    </section>
+    </Section>
   );
 };
 

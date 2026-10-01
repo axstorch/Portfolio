@@ -1,49 +1,75 @@
 import React, { useEffect, useState } from 'react';
 
+/**
+ * Custom circular cursor. Disabled entirely when the user prefers reduced
+ * motion, on touch devices, and on any element marked data-native-cursor,
+ * so the system cursor is never hidden where it is needed.
+ */
 const CustomCursor: React.FC = () => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+  const [enabled, setEnabled] = useState(false);
+  const [pos, setPos] = useState({ x: -100, y: -100 });
+  const [hovering, setHovering] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const updateCursor = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const coarse = window.matchMedia('(hover: none), (pointer: coarse)');
+
+    const evaluate = () => {
+      setEnabled(!reduce.matches && !coarse.matches);
     };
-
-    const handleMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'A' || target.tagName === 'BUTTON' || target.closest('a') || target.closest('button')) {
-        setIsHovering(true);
-      } else {
-        setIsHovering(false);
-      }
-    };
-
-    window.addEventListener('mousemove', updateCursor);
-    window.addEventListener('mouseover', handleMouseOver);
-
+    evaluate();
+    reduce.addEventListener('change', evaluate);
+    coarse.addEventListener('change', evaluate);
     return () => {
-      window.removeEventListener('mousemove', updateCursor);
-      window.removeEventListener('mouseover', handleMouseOver);
+      reduce.removeEventListener('change', evaluate);
+      coarse.removeEventListener('change', evaluate);
     };
   }, []);
 
+  useEffect(() => {
+    if (!enabled) return;
+
+    const move = (e: MouseEvent) => {
+      setPos({ x: e.clientX, y: e.clientY });
+      setVisible(true);
+
+      const el = e.target as HTMLElement | null;
+      const interactive = el?.closest(
+        'a, button, input, textarea, select, [role="button"], [data-native-cursor]'
+      );
+      const isInteractive = Boolean(interactive) && !el?.closest('[data-native-cursor]');
+      setHovering(isInteractive);
+    };
+    const leave = () => setVisible(false);
+
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseleave', leave);
+    return () => {
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseleave', leave);
+    };
+  }, [enabled]);
+
+  if (!enabled) return null;
+
   return (
     <div
-      className="custom-cursor fixed pointer-events-none z-[9999] mix-blend-difference hidden md:flex items-center justify-center transition-transform duration-100 ease-out"
+      aria-hidden="true"
+      className="custom-cursor fixed pointer-events-none z-[9999] hidden md:flex items-center justify-center transition-transform duration-100 ease-out mix-blend-difference"
       style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-        transform: `translate(-50%, -50%) scale(${isHovering ? 1.5 : 1})`,
+        left: `${pos.x}px`,
+        top: `${pos.y}px`,
+        transform: `translate(-50%, -50%) scale(${hovering ? 1.4 : 1})`,
+        opacity: visible ? 1 : 0,
       }}
     >
-      <div className={`
-        relative flex items-center justify-center rounded-full border border-white transition-all duration-300
-        ${isHovering ? 'w-12 h-12 bg-white text-black' : 'w-8 h-8 bg-transparent'}
-      `}>
-        <div className={`w-1 h-1 bg-white rounded-full transition-opacity ${isHovering ? 'opacity-0' : 'opacity-100'}`} />
-        {isHovering && (
-           <span className="text-[8px] font-bold uppercase tracking-widest text-black">View</span>
-        )}
+      <div
+        className={`flex items-center justify-center rounded-full border border-white transition-all duration-300 ${
+          hovering ? 'w-11 h-11 bg-white' : 'w-8 h-8 bg-transparent'
+        }`}
+      >
+        {!hovering && <span className="w-1 h-1 bg-white rounded-full" />}
       </div>
     </div>
   );

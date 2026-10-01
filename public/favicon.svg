@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Akshat Saxena">
+  <rect width="64" height="64" rx="12" fill="#1C1C1C"/>
+  <text x="50%" y="52%" dy="0.35em" text-anchor="middle"
+        font-family="Playfair Display, Georgia, serif" font-size="30" fill="#F4F4F0">A</text>
+  <rect x="18" y="50" width="28" height="2.5" rx="1.25" fill="#8B5E3C"/>
+</svg>

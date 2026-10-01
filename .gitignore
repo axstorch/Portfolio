@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Source documents and local scratch
+experiment/
+*.pptx
+Akshat_saxena_resume_APM.pdf
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

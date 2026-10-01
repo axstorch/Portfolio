@@ -1,292 +1,759 @@
-import { ExperienceItem, ProjectItem, SkillCategory, LinkedInPost, BTSImage } from './types';
+import {
+  ExperienceItem,
+  ProjectItem,
+  SkillCategory,
+  LinkedInPost,
+  BTSImage,
+  ProofStat,
+  WorkCard,
+  AlsoBuiltItem,
+  CaseStudyPage,
+  CertificationItem,
+  FunnelStage,
+  TrayaInsight,
+  RoadmapMonth,
+} from './types';
 
 export const RESUME_DATA = {
   name: "Akshat Saxena",
-  title: "Product Management Intern | React & Supabase Developer",
+  title: "Associate Product Manager",
+  tagline: "B2B internal tools, logistics & commerce | PRD to post-launch measurement",
   email: "akshatsaxena7974@gmail.com",
   phone: "+91 7974920243",
-  location: "Hyderabad, Telangana, India",
+  location: "Pune, Maharashtra, India",
   linkedin: "https://www.linkedin.com/in/akshat-saxena-5513a8258",
-  Github: "https://github.com/axstorch",
-  Resume: "https://drive.google.com/file/d/1Ye-W37kHNLRmzGtryg6cORLl_PxkkdRH/view?usp=drive_link",
-  summary: "Product intern with 2 internships, 3 shipped PRDs (4/6 features adopted into live roadmaps), 1 built-from-scratch product and 2 automations, proven ability to run end-to-end discovery, translate customer pain into prioritised requirements, and present data-backed roadmap recommendations to leadership.",
-}
+  github: "https://github.com/axstorch",
+  // TODO: replace with the hosted PDF for the APM resume.
+  resume: "https://drive.google.com/file/d/1Ye-W37kHNLRmzGtryg6cORLl_PxkkdRH/view?usp=drive_link",
+  summary:
+    "Computer Science graduate with 2 product internships across B2B internal tools and logistics. Shipped CRM automations, a CMS revamp, and data-driven root-cause analyses that changed team decisions. Comfortable going from SQL and data insights to requirements and engineering tickets.",
+};
+
+/** Abbreviates month names to their standard 3-letter form. */
+export const shortMonths = (value: string): string =>
+  value.replace(
+    /\b(January|February|March|April|June|July|August|September|October|November|December|May)\b/g,
+    (m) => m.slice(0, 3)
+  );
+
+export const EDUCATION_DATA = {
+  school: "Kalinga Institute of Industrial Technology",
+  degree: "B.Tech, Computer Science & Engineering",
+  period: "2022 - 2026",
+  cgpa: "8.57",
+  location: "Bhubaneswar, Odisha, India",
+};
+
+export const PROOF_STATS: ProofStat[] = [
+  {
+    id: "p1",
+    value: "23%",
+    context:
+      "YoY drop in US call pickup rates traced to voicemails being counted as pickups; sales resumed voicemail outreach.",
+    label: "AmberStudent",
+  },
+  {
+    id: "p2",
+    value: "40+ \u2192 3",
+    context: "CRM/CMS escalations resolved and converted into 3 shipped automations.",
+    label: "AmberStudent",
+  },
+  {
+    id: "p3",
+    value: "18.7K",
+    context:
+      "students affected by duplicate email sequences; shipped consolidation to one combined email per student.",
+    label: "AmberStudent",
+  },
+];
 
 export const EXPERIENCE_DATA: ExperienceItem[] = [
-
   {
-    id: "4",
+    id: "amber",
+    role: "Product Management Intern, CRM & CMS",
+    company: "AmberStudent",
+    period: "May 2026 - Present",
+    location: "Pune, India",
+    label: "Root-cause analysis",
+    description: [
+      "Root-cause analysis: Traced a 23% YoY drop in US call pickup rates to agents no longer leaving voicemails, which a 15-second threshold had counted as pickups; sales resumed voicemail outreach.",
+      "CMS revamp: Owned requirements, prioritisation and QA; caught 12+ pre-launch issues, including data loss on saves and room-level currency overrides.",
+      "Automation: Resolved 40+ CRM/CMS escalations and converted the top recurring types into 3 shipped automations.",
+      "Email fix: Found duplicate email sequences affecting 18.7K students over 12 months; shipped consolidation to one combined email per student.",
+    ],
+  },
+  {
+    id: "swift",
     role: "Product Intern",
     company: "Swift Logistics",
-    period: "January 2026 - April 2026",
-    location: "Bangalore, India",
+    period: "January 2026 - March 2026",
+    location: "Bengaluru, India",
+    label: "Support automation",
     description: [
-      "Technical Product Development: Conceptualized and built an internal RCA chatbot and a BigQuery-integrated Looker dashboard, reducing manual debugging effort by 47%.",
-      "Data-Driven Problem Solving: Mapped the seller escalation lifecycle across 300+ cases using BigQuery and MongoDB, identifying root causes to drive a 23% reduction in average resolution time.",
-      "User Research & Insights: Conducted weekly research with 15+ clients and account managers, translating feedback into 25+ actionable engineering tickets and structured product insights.",
-      "Roadmap & Strategy Influence: Analyzed courier allocation workflows to identify 4 core failure patterns, directly influencing engineering roadmap prioritization and reducing repeat escalations.",
-      "Cross-Functional Leadership: Partnered with engineering, data, and business teams to resolve critical bottlenecks, improving shipment lifecycle reliability and resolution speed by 65%."
-    ]
+      "Support automation: Owned first-line tech escalations from 35-40 account managers across 300+ cases, then automated the top recurring types with an AI-assisted Slack bot, cutting average resolution time by 32%.",
+      "Revenue leakage: Caught a vendor billing bug where ~23K calls over 6 months were returned as successful with no duration or recording URL, so unconnected calls were being billed. Exotel confirmed the bug and waived charges for all flagged call IDs.",
+      "Account rescue: Traced a prime seller's drop in shipments to a Shopify pickup-address change never synced to the system; by then 271 shipments had gone to competitors. Walked the seller through the fix and monitored volumes back to normal.",
+      "Engineering escalation: Diagnosed a shipment-export bug where pagination without a fixed sort order silently dropped or duplicated entries. Root cause verified and fixed by engineering.",
+    ],
   },
-
   {
-    id: "1",
+    id: "sor",
     role: "Strategy & Consulting Intern",
     company: "SOR Informatics",
     period: "June 2025 - September 2025",
     location: "Hyderabad, India",
+    label: "Competitive analysis",
     description: [
-      "Product & Competitive Analysis: Led structured competitor and feature-gap analyses for 4 client products, directly informing roadmap priorities and product positioning decisions.",
-      "Cross-Functional Execution: Acted as a coordination bridge between field teams and leadership, synthesizing updates from 6 on-ground associates into clear, decision-ready insights.",
-      "User & Market Research: Designed and executed targeted market and user research across 3 engagements, translating insights into actionable recommendations for product and growth strategy.",
-
-    ]
+      "Competitive analysis: Led structured competitor and feature-gap analyses for 4 client products, directly informing roadmap priorities and product positioning decisions.",
+      "Cross-functional: Acted as a coordination bridge between field teams and leadership, synthesizing updates from 6 on-ground associates into clear, decision-ready insights.",
+      "User research: Designed and executed targeted market and user research across 3 engagements, translating insights into actionable recommendations for product and growth strategy.",
+    ],
   },
-  {
-    id: "2",
-    role: "Senior Marketing Executive",
-    company: "FED KIIT",
-    period: "August 2024 - September 2025",
-    location: "Bhubaneswar, India",
-    description: [
-      "Go-to-Market Execution: Led on-ground acquisition and engagement initiatives that increased student participation by 15%, driving 200+ active attendees.",
-      "Program & Event Ownership: Owned end-to-end planning and execution of OMEGA, scaling attendance to 330+ participants and improving turnout by 30% over previous editions.",
-      "Operational Optimization: Partnered with a 12-member cross-functional team to streamline event logistics, reducing setup time by 20% and improving execution efficiency."
-    ]
-
-  },
-  {
-    id: "3",
-    role: "Intern",
-    company: "Arrka",
-    period: "June 2024 - June 2024",
-    location: "Remote",
-    description: [
-      "Managed 5000+ Cybersecurity data points with a 97% accuracy rate.",
-      "Led creation of 6+ security policy documents, reducing incident resolution time by 23%."
-    ]
-  }
 ];
 
-export const PROJECTS_DATA: ProjectItem[] = [
+export const WORK_DATA: WorkCard[] = [
   {
-    id: "p1",
-    title: "Crave",
-    description: "A fully functional cross-platform app designed to streamline food court experiences. Focuses on reducing wait times and boosting revenue for our university.",
-    technologies: ["User research", "Market analysis", "Wireframing", "Agile Methodology", "UX understanding"],
-    image: "/assets/linkedin/LOGO.jpg",
-    imagePlaceholder: "bg-stone-300",
-    url: "https://drive.google.com/file/d/1d00uA8e6ybdiTNBo--1OFnLhWES8uB4p/view?usp=drivesdk"
+    id: "newme",
+    number: "01",
+    title: "NEWME",
+    subtitle: "Retention Analysis & Strategy",
+    description:
+      "Defined 60-day retention, measured a 10.55% baseline, and designed cohort-based journeys and A/B tests targeting 14-15%.",
+    outcome: "Retention nearly doubles for users with 10+ wishlisted items.",
+    tags: ["Retention", "Cohort analysis", "A/B testing", "Lifecycle journeys"],
+    href: "/work/newme",
+    // TODO: add the retention-by-wishlist-count bar chart.
+    image: undefined,
+    imageAlt: "Bar chart showing retention rate rising with wishlist count",
+    imageSlotLabel: "NEWME_IMAGE",
   },
-
   {
-    id: "p3",
-    title: "Linkedin-Automation",
-    description: "An automation built using n8n that connects with my telegram account to share latest job postings (filters applied) directly to me.",
-    technologies: ["n8n", "Automation", "Telegram-bot"],
-    image: "/assets/linkedin/automation.png",
-    imagePlaceholder: "bg-stone-400",
-    url: "https://github.com/axstorch/LinkedIn-job-alert-automated"
-
+    id: "traya",
+    number: "02",
+    title: "Traya",
+    subtitle: "Checkout Conversion Case Study",
+    description:
+      "Interview case study using funnel data provided by Traya: 8 prioritised enhancements, a 3-month roadmap and a PRD for deep-linking recovery messages into in-app checkout.",
+    outcome: "Roadmap targets +30% 24-hour conversion.",
+    tags: ["Funnel analysis", "PRD", "Roadmapping", "Prioritisation"],
+    href: "/work/traya",
+    // TODO: add the impact/effort matrix, with personal details blurred.
+    image: undefined,
+    imageAlt: "Impact against effort matrix plotting eight prioritised enhancements",
+    imageSlotLabel: "TRAYA_IMAGE",
+    badge: "Interview case study",
   },
-
   {
-    id: "p2",
-    title: "WeatherForU",
-    description: "A dynamic weather dashboard deployed for real-time updates. Features intuitive data visualization for climatic conditions.",
-    technologies: ["Agile Mgmt", "API Integration", "AI", "UX"],
-    image: "/assets/linkedin/Project2.png",
-    imagePlaceholder: "bg-stone-400",
-    url: "https://weatherfor-u.vercel.app/"
+    id: "chotu",
+    number: "03",
+    title: "Chotu",
+    subtitle: "Hyperlocal Quick-Commerce PRD",
+    description:
+      "End-to-end PRD connecting tier-3/4 city buyers with nearby kirana stores across four personas, with MVP scoping and a payment-intent flow.",
+    outcome: "Explicit trade-offs: what's in the MVP and what is deliberately out.",
+    tags: ["PRD", "MVP scoping", "Marketplace", "Requirements"],
+    href: "/work/chotu",
+    // TODO: add the buyer journey flow diagram.
+    image: undefined,
+    imageAlt: "Buyer journey flow diagram from order to fulfilment",
+    imageSlotLabel: "CHOTU_IMAGE",
   },
-
-  {
-    id: "p4",
-    title: "AI-Powered ATS Scanner",
-    description: "AI-powered ATS scanner that reduces manual resume screening effort by automatically ranking and deduplicating candidates using NLP.",
-    technologies: ["n8n", "API Integration", "AI", "LLMs", "Automation", "Data Deduplication"],
-    image: "/assets/linkedin/Project3.png",
-    imagePlaceholder: "bg-stone-400",
-    url: "https://github.com/axstorch/n8n-recruitment-automation"
-
-  }
-
-
-
 ];
 
-export const LINKEDIN_POSTS = [
+export const CASE_STUDY_PAGES: CaseStudyPage[] = [
   {
-    id: '7402742225333338112',
-    title: 'Driving adoption with the help of cute balloons and bracelets',
-    excerpt:
-      'Noticed a marketing strategy in my campus that worked... too well!',
-    date: 'Dec 2024',
+    slug: "newme",
+    title: "NEWME",
+    summary: "Defining and improving retention for a wishlist driven commerce product.",
+    role: "Author",
+    type: "Case study",
+    // TODO: add the date from the source document.
+    date: "",
+    sections: [
+      {
+        heading: "Context",
+        body: "A commerce product with a large wishlist population and no agreed definition of retention. Without a shared metric, no improvement could be measured or argued for.",
+      },
+      {
+        heading: "Problem",
+        body: "Retention was undefined, so the team could not tell whether weak retention was a demand problem or a conversion problem, and could not prioritise work against it.",
+      },
+      {
+        heading: "Approach",
+        body: "I defined 60-day retention as a repeat order within 60 days of the last purchase and measured a 10.55% baseline. Segmenting by wishlist depth showed retention nearly doubles for users with 10+ wishlisted items, which points to purchase friction rather than a lack of interest. I split the base into 3 cohorts: first-time buyers at 30-60 days, high-wishlist single-order users, and lapsed repeat buyers.",
+      },
+      {
+        heading: "Deliverables",
+        body: "A retention definition and baseline, a cohort analysis, multi-channel lifecycle journeys for each cohort, and an A/B test plan.",
+      },
+      {
+        heading: "Outcome / Decision",
+        body: "The recommendation was to target 14-15% retention by removing purchase friction for high-wishlist users, rather than spending on broad acquisition. The wishlist finding is what redirected the strategy.",
+      },
+      {
+        heading: "What I would do next",
+        body: "I would size the friction directly. The wishlist correlation identifies where to look, but the next step is instrumenting the checkout steps those users hit, so the test addresses a measured cause instead of a correlated one.",
+      },
+    ],
+    deliverables: [
+      { alt: "Retention by wishlist count bar chart", caption: "Retention by wishlist count", slotLabel: "NEWME_IMAGE" },
+      { alt: "Cohort and journey slide", caption: "Cohorts and lifecycle journeys", slotLabel: "NEWME_IMAGE_2" },
+    ],
+    // TODO: add the full case study link.
+    deckUrl: undefined,
+    deckLabel: "View full case study",
+  },
+  {
+    slug: "traya",
+    title: "Traya",
+    summary: "Improving signup to purchase conversion, using funnel data shared by the company.",
+    role: "Author",
+    type: "Case study",
+    // TODO: add the date from the source document.
+    date: "",
+    sections: [
+      {
+        heading: "Context",
+        body: "An interview case study, not employment or a client engagement. Traya shared funnel data for the exercise, and I ran the analysis and wrote the recommendations independently.",
+      },
+      {
+        heading: "Problem",
+        body: "The post-assessment funnel loses users before they convert inside the 24-hour window. 82% of assessment takers never reach Purchase. The two biggest leaks are Kit Preview to Checkout, down 25 points, and Checkout to Payment, down 17 points. For the exercise, acquisition is a first successful order, signup is OTP verified, and purchase is payment confirmed.",
+      },
+      {
+        heading: "Approach",
+        body: "I walked the funnel stage by stage to locate where intent is lost: Assessment 100%, Kit Preview 70%, Checkout Start 45%, Payment 28%, Purchase 18%. Each stage carries a distinct reason for the drop, so pricing anxiety, app and web friction and missing urgency are separate problems rather than one conversion problem. From that I wrote 8 enhancements across 4 levers, reduce friction, improve intent, personalise, and recover delayed users.",
+      },
+      {
+        heading: "Deliverables",
+        body: "8 prioritised enhancements, each with the problem, the proposed solution, and an effort and impact rating. An impact against effort matrix placing all 8 into quadrants: 5 quick wins, 1 major project, 2 fill-ins and none to reconsider. A 3-month roadmap sequencing them, and a full PRD for deep-linking WhatsApp and SMS recovery messages into a pre-filled in-app checkout, including analytics events, risks, a 6-week rollout and click-to-purchase as the primary metric.",
+      },
+      {
+        heading: "Outcome / Decision",
+        body: "The target is +30% signup to purchase conversion within 24 hours over 3 months. The first change recommended is the deep-link recovery checkout, the only item rated very high impact at low effort, because delayed high-intent users are the largest recoverable group and re-authentication is the single most avoidable step in the funnel.",
+      },
+      {
+        heading: "What I would do next",
+        body: "Ship the five quick wins together in month one and read the funnel again before starting the AI work. The AI journey and before/after previews are the only high-effort items, and the deck assumes they earn their cost. I would want the month one numbers before committing two months of build, and I would instrument the two drop-off stages first so the impact ratings rest on observed behaviour rather than inference.",
+      },
+    ],
+    deliverables: [
+      { alt: "Conversion funnel by stage", caption: "Funnel by stage", slotLabel: "traya:funnel" },
+      { alt: "Impact against effort matrix", caption: "Impact against effort", slotLabel: "traya:matrix" },
+      { alt: "Deep-link checkout PRD page", caption: "Deep-link checkout PRD", slotLabel: "traya:prd" },
+    ],
+    // TODO: add the full deck link.
+    deckUrl: undefined,
+    deckLabel: "View full case study",
+  },
+  {
+    slug: "chotu",
+    title: "Chotu",
+    summary: "An end-to-end PRD for a hyperlocal quick-commerce marketplace.",
+    role: "Author",
+    type: "PRD",
+    date: "August 2025",
+    sections: [
+      {
+        heading: "Context",
+        body: "A tier-3 and tier-4 city market where organised delivery does not reach and kirana stores already hold the inventory and the customer relationships.",
+      },
+      {
+        heading: "Problem",
+        body: "Buyers in smaller cities lack reliable quick commerce, while kirana owners cannot serve demand beyond walk-in customers. A marketplace has to be viable for both sides, which is a different problem from building another delivery app.",
+      },
+      {
+        heading: "Approach",
+        body: "I wrote the PRD across 4 personas: buyer, kirana owner, delivery partner and support agent, with MVP tagged requirements, non-functional requirements and success metrics. Revenue comes from urgent delivery fees plus premium kirana subscriptions.",
+      },
+      {
+        heading: "Deliverables",
+        body: "An end-to-end PRD covering both sides of the marketplace, MVP and post-MVP requirements, success metrics, and a payment-intent flow that captures payment only after a kirana accepts an order.",
+      },
+      {
+        heading: "Outcome / Decision",
+        body: "In scope: an owned delivery fleet, single-store fulfilment, and manual inventory for low-tech users. Out of scope, deliberately: ratings, discounts and an AI bot. The payment-intent decision matters most, because charging before a store accepts would push the risk onto buyers and make stores cautious about accepting at all.",
+      },
+      {
+        heading: "What I would do next",
+        body: "I would validate the payment-intent flow with a small set of kirana owners first, and define the open issues on delivery reliability and inventory accuracy before writing the success metrics precisely enough to be accountable.",
+      },
+    ],
+    deliverables: [
+      { alt: "Buyer journey flow diagram", caption: "Buyer journey", slotLabel: "CHOTU_IMAGE" },
+      { alt: "Persona and requirements map", caption: "Personas and MVP scope", slotLabel: "CHOTU_IMAGE_2" },
+    ],
+    // TODO: add the full PRD link.
+    deckUrl: undefined,
+    deckLabel: "View full PRD",
+  },
+];
+
+export const ALSO_BUILT: AlsoBuiltItem[] = [
+  {
+    id: "ats",
+    title: "AI Resume Screening Workflow",
+    description:
+      "n8n + LLM workflow that screens candidates against job requirements, with hash-based deduplication.",
+    tags: ["n8n", "LLM", "Automation"],
+  },
+  {
+    id: "bot",
+    title: "Job-Alert Bot",
+    description:
+      "n8n workflow that searches for APM and product-intern roles and sends matching ones to Telegram.",
+    tags: ["n8n", "Automation", "Telegram"],
+  },
+];
+
+export const PROJECTS_DATA: ProjectItem[] = ALSO_BUILT.map((p) => ({
+  id: p.id,
+  title: p.title,
+  description: p.description,
+  technologies: p.tags,
+  url: p.id === "ats"
+    ? "https://github.com/axstorch/n8n-recruitment-automation"
+    : "https://github.com/axstorch/LinkedIn-job-alert-automated",
+  linkLabel: "View on GitHub",
+}));
+
+export const SKILLS_DATA: SkillCategory[] = [
+  {
+    category: "Product",
+    skills: [
+      "PRD writing",
+      "Requirements",
+      "Prioritisation",
+      "User research",
+      "Roadmapping",
+      "Root cause analysis",
+      "Agile",
+    ],
+  },
+  {
+    category: "Data & Tools",
+    skills: [
+      "SQL",
+      "BigQuery",
+      "Metabase",
+      "MongoDB",
+      "Jira",
+      "Figma/FigJam",
+      "Excel",
+      "n8n",
+      "LLM workflows",
+      "Funnel and cohort analysis",
+      "A/B test design",
+    ],
+  },
+];
+
+export const CERTIFICATIONS_DATA: CertificationItem[] = [
+  {
+    title: "Project Management Foundations",
+    issuer: "Google",
+    url: "https://www.coursera.org/account/accomplishments/verify/VPIGGNTIVVFV",
+  },
+  {
+    title: "Product Management First Steps",
+    issuer: "LinkedIn Learning",
+    url: "https://www.linkedin.com/learning/certificates/fa42c50c3180fa409d71ae6ca5015321e87876f0a7184de460af13bcfbc61e37",
+  },
+  {
+    title: "Project Initiation",
+    issuer: "Google",
+    url: "https://www.coursera.org/account/accomplishments/verify/M4CYOA9VRSG1",
+  },
+  {
+    title: "Project Planning",
+    issuer: "Google",
+    url: "https://www.coursera.org/account/accomplishments/verify/M4CYOA9VRSG1",
+  },
+  {
+    title: "On-Premise Data Visualization",
+    issuer: "Coursera",
+    url: "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Tata/MyXvBcppsW2FkNYCX_Tata_bm7RavEb24C2zq9as_1691496892553_completion_certificate.pdf",
+  },
+  {
+    title: "Corporate Governance",
+    issuer: "Coursera",
+    url: "https://drive.google.com/file/u/2/d/1fgvRLcJKV1NhCTDXjX8DpDQ8AzAgHAzS/view?usp=drive_link",
+  },
+];
+
+export const LINKEDIN_POSTS: LinkedInPost[] = [
+  {
+    id: "7402742225333338112",
+    title: "Driving adoption with the help of cute balloons and bracelets",
+    excerpt: "Noticed a marketing strategy in my campus that worked... too well!",
+    date: "Dec 2024",
     likes: 80,
     comments: 12,
-    url: 'https://www.linkedin.com/feed/update/urn:li:share:7402742225333338112',
-    image: "/assets/linkedin/Post1.png",
+    url: "https://www.linkedin.com/feed/update/urn:li:share:7402742225333338112",
+    image: "/assets/linkedin/Post1.webp",
   },
-
   {
-    id: '7414255276062740481',
-    title: 'An AI-powered resume screening workflow that streamlines recruitment',
+    id: "7414255276062740481",
+    title: "An AI-powered resume screening workflow that streamlines recruitment",
     excerpt:
-      'Built an AI-powered resume screening workflow using n8n that automatically screens incoming resumes based on job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications (Click for a video demonstration).',
-    date: 'Jan 2026',
+      "Built an AI-powered resume screening workflow using n8n that automatically screens incoming resumes based on job descriptions, deduplicate candidates, and rank applicants based on relevance and qualifications.",
+    date: "Jan 2026",
     likes: 30,
     comments: 9,
-    url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7414255276062740481',
-    image: "/assets/linkedin/Project3.png",
+    url: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7414255276062740481",
+    image: "/assets/linkedin/Project3.webp",
   },
-
   {
-    id: '7409573688792014851',
-    title: 'A simple UI change that can ease the lives of millions!',
+    id: "7409573688792014851",
+    title: "A simple UI change that can ease the lives of millions!",
     excerpt:
-      'When you go through your payment history, all you see are random names. You scratch your head, wondering 𝐰𝐡𝐲 𝐲𝐨𝐮 𝐩𝐚𝐢𝐝 𝐊𝐢𝐫𝐚𝐧 𝐋𝐚𝐥 ₹𝟐𝟒𝟓?',
-    date: 'Dec 2024',
+      "When you go through your payment history, all you see are random names. You scratch your head, wondering why you paid Kirana Labs Rs 245?",
+    date: "Dec 2024",
     likes: 28,
     comments: 12,
-    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7409573688792014851',
-    image: "/assets/linkedin/UPI.png",
+    url: "https://www.linkedin.com/embed/feed/update/urn:li:share:7409573688792014851",
+    image: "/assets/linkedin/UPI.webp",
   },
-
   {
-    id: '7408625085772668928',
-    title: 'Why scroll through a list of job postings when you can have them come to you?',
+    id: "7408625085772668928",
+    title: "Why scroll through a list of job postings when you can have them come to you?",
     excerpt:
-      'Built an automation using n8n that connects with telegram to share latest job postings directly to me.',
-    date: 'Dec 2024',
+      "Built an automation using n8n that connects with telegram to share latest job postings directly to me.",
+    date: "Dec 2024",
     likes: 19,
     comments: 4,
-    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7408625085772668928',
-    image: "/assets/linkedin/automation.png",
+    url: "https://www.linkedin.com/embed/feed/update/urn:li:share:7408625085772668928",
+    image: "/assets/linkedin/automation.webp",
   },
-
-
   {
-    id: '7407295316380737536',
-    title: 'How our product can save time, boost revenue and save you from hunger? ',
+    id: "7407295316380737536",
+    title: "How our product can save time, boost revenue and save you from hunger?",
     excerpt:
-      'Ever stood in a long queue at a food court, hungry and frustrated? Our app Crave is here to change that!',
-    date: 'Dec 2024',
+      "Ever stood in a long queue at a food court, hungry and frustrated? Our app Crave is here to change that!",
+    date: "Dec 2024",
     likes: 31,
     comments: 3,
-    url: 'https://www.linkedin.com/embed/feed/update/urn:li:share:7407295316380737536',
-    image: "/assets/linkedin/crave2.png",
+    url: "https://www.linkedin.com/embed/feed/update/urn:li:share:7407295316380737536",
+    image: "/assets/linkedin/crave2.webp",
   },
-
   {
-    id: '7390306392219291648',
-    title: 'Explaining the 4 pillars of OOPS using water bottle?',
+    id: "7390306392219291648",
+    title: "Explaining the 4 pillars of OOPS using water bottle?",
     excerpt:
-      'How a simple water bottle can help you understand the 4 pillars of OOPS in programming!',
-    date: 'Nov 2024',
+      "How a simple water bottle can help you understand the 4 pillars of OOPS in programming!",
+    date: "Nov 2024",
     likes: 43,
     comments: 9,
-    url: 'https://www.linkedin.com/feed/update/urn:li:share:7390306392219291648',
-    image: "/assets/linkedin/Post2.png",
+    url: "https://www.linkedin.com/feed/update/urn:li:share:7390306392219291648",
+    image: "/assets/linkedin/Post2.webp",
   },
-
   {
-    id: '7331336647088713730',
-    title: 'A simple weather app using React and OpenWeather API',
-    excerpt: 'It was a project and had to be submitted under 4 hours. It does work!',
-    date: 'June 2025',
+    id: "7331336647088713730",
+    title: "A simple weather app using React and OpenWeather API",
+    excerpt: "It was a project and had to be submitted under 4 hours. It does work!",
+    date: "June 2025",
     likes: 57,
     comments: 4,
-    url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7331336647088713730',
-    image: "/assets/linkedin/Post4.png",
+    url: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7331336647088713730",
+    image: "/assets/linkedin/Post4.webp",
   },
-
   {
-    id: '7330974262901596163',
-    title: 'A brief introduction to CRM systems',
-    excerpt: 'Same as title, A brief introduction to CRM systems.',
-    date: 'June 2025',
+    id: "7330974262901596163",
+    title: "A brief introduction to CRM systems",
+    excerpt: "Same as title, A brief introduction to CRM systems.",
+    date: "June 2025",
     likes: 26,
     comments: 1,
-    url: 'https://www.linkedin.com/feed/update/urn:li:ugcPost:7330974262901596163',
-    image: "/assets/linkedin/Post3.png",
+    url: "https://www.linkedin.com/feed/update/urn:li:ugcPost:7330974262901596163",
+    image: "/assets/linkedin/Post3.webp",
   },
-
-
 ];
 
 export const BTS_IMAGES: BTSImage[] = [
   {
     id: "b1",
     caption: "Team at SOR",
+    alt: "The SOR Informatics team standing together outdoors",
     aspectRatio: "landscape",
     image: "/assets/bts/bts1.jpg",
   },
   {
     id: "b3",
-    caption: "With the Head of Hospitality (In talks for launching Crave)",
-    aspectRatio: "portrait",
+    caption: "With the Head of Hospitality",
+    alt: "Talking with the Head of Hospitality about launching the Crave app",
+    aspectRatio: "square",
     image: "/assets/bts/bts3.jpg",
   },
   {
     id: "b2",
     caption: "Writing something important",
+    alt: "Writing at a desk during a work session",
     aspectRatio: "square",
     image: "/assets/bts/bts2.jpg",
   },
-
   {
     id: "b4",
     caption: "Appreciation from the team",
+    alt: "A certificate or note of appreciation received from the team",
     aspectRatio: "square",
     image: "/assets/bts/bts4.jpg",
   },
 ];
 
+/** Kept for the chatbot prompt, which reads from the same source of truth. */
+/* ------------------------------------------------------------------ *
+ * Traya teardown. Transcribed from Traya_Product_Teardown2.pptx (16 slides).
+ * The deck contains no embedded images and no personal data, so the
+ * funnel and the impact/effort matrix are rebuilt as real components
+ * rather than screenshots.
+ * ------------------------------------------------------------------ */
 
-export const SKILLS_DATA: SkillCategory[] = [
+export const TRAYA_FUNNEL: FunnelStage[] = [
+  { label: "Assessment", percent: 100, note: "Starting point" },
+  { label: "Kit Preview", percent: 70, note: "Pricing anxiety" },
+  { label: "Checkout Start", percent: 45, note: "App and web friction" },
+  { label: "Payment", percent: 28, note: "Urgency missing" },
+  { label: "Purchase", percent: 18, note: "Final conversion" },
+];
+
+export const TRAYA_INSIGHTS: TrayaInsight[] = [
   {
-    category: "Product",
-    skills: ["Agile Mgmt", "Requirement Gathering", "User Research", "Competitor Analysis", "Strategy", "Product Roadmapping", "MVP definition", "Wireframing"]
+    n: 1,
+    theme: "Assessment",
+    title: "Assessment Progress Indicator",
+    problem:
+      "Users quit the assessment mid-way because they have no sense of how many questions remain or how long it will take.",
+    solution: [
+      "Show \"Question 12 of 15\"",
+      "Add micro-copy: \"3 more to go\"",
+      "Estimated time: \"~1 min left\"",
+      "Animated progress bar at top",
+    ],
+    effort: "Low",
+    impact: "High",
+    priority: "P1",
   },
   {
-    category: "Technical/Tools",
-    skills: ["MySQL", "n8n", "API Integration", "Data Visualization", "Insight Generation", "Notion", "Canva", "Powerpoint", "Excel", "Python"]
+    n: 2,
+    theme: "Recovery",
+    title: "Deep-link Recovery Checkout",
+    problem:
+      "WhatsApp recovery links open the web checkout, forcing users to re-authenticate. Most drop off before they get back to where they were.",
+    solution: [
+      "Deep-link straight into the app",
+      "Pre-filled cart on landing",
+      "One-tap checkout flow",
+      "Fallback to web only if app missing",
+    ],
+    effort: "Low",
+    impact: "Very High",
+    priority: "P1",
   },
   {
-    category: "Leadership",
-    skills: ["Collaboration", "Communication", "Leadership", "Problem Solving", "Adaptibility", "Critical Thinking", "Data-driven Approach"]
-  }
+    n: 3,
+    theme: "Pricing",
+    title: "Pricing Psychology at Checkout",
+    problem:
+      "A large lump-sum price triggers sticker shock and hesitation right at the moment of payment.",
+    solution: [
+      "Frame the saving rather than the total",
+      "\"Offer valid for next 24 hours\"",
+      "Visual strike-through on MRP",
+    ],
+    effort: "Low",
+    impact: "High",
+    priority: "P1",
+  },
+  {
+    n: 4,
+    theme: "Urgency",
+    title: "Personalised 24-Hour Offer Unlock",
+    problem:
+      "A static discount feels permanent, so there is no reason to act now. Users postpone and never return.",
+    solution: [
+      "Interactive \"Unlock Offer\" button",
+      "Live 24-hour countdown timer",
+      "Personalised to the user's plan",
+      "Push and WhatsApp nudge at T-2h",
+    ],
+    effort: "Low",
+    impact: "High",
+    priority: "P1",
+  },
+  {
+    n: 5,
+    theme: "CTA Copy",
+    title: "CTA Copy Optimization",
+    problem:
+      "Generic \"Buy Now\" copy does not connect with the emotional reason users came to Traya in the first place.",
+    solution: [
+      "\"Claim Your Routine ->\"",
+      "\"Save My Hair ->\"",
+      "\"Start Recovery Today\"",
+      "A/B test against control",
+    ],
+    effort: "Low",
+    impact: "High",
+    priority: "P1",
+  },
+  {
+    n: 6,
+    theme: "AI Journey",
+    title: "AI Hair Transformation Journey",
+    problem:
+      "Users cannot visualise long-term results, so the perceived return of a 5-month plan feels abstract and unjustified.",
+    solution: [
+      "Personalised monthly progress preview",
+      "Month 1, Month 3 and Month 5 visuals",
+      "AI-generated from the user's scalp photo",
+      "Shown inline at checkout",
+    ],
+    effort: "Medium",
+    impact: "High",
+    priority: "P1",
+  },
+  {
+    n: 7,
+    theme: "AI Reminders",
+    title: "Personalised AI Before/After Previews",
+    problem:
+      "WhatsApp recovery reminders feel generic and easy to ignore, even for users who almost converted.",
+    solution: [
+      "Use the user's scalp photo as input",
+      "Generate a realistic 5-month AI preview",
+      "Embed the image in the WhatsApp reminder",
+      "CTA back to one-tap checkout",
+    ],
+    effort: "Medium",
+    impact: "Medium",
+    priority: "P2",
+  },
+  {
+    n: 8,
+    theme: "UX Polish",
+    title: "Polishing the User Experience",
+    problem:
+      "The flow works, but it does not feel premium. Small UX rough edges undermine trust in a healthcare-adjacent product.",
+    solution: [
+      "Smooth screen transitions",
+      "Subtle motion and animations",
+      "Haptic feedback on key actions",
+      "Consistent loading states",
+    ],
+    effort: "Medium",
+    impact: "Medium",
+    priority: "P2",
+  },
+];
+
+/** Quadrant placement, as drawn on slide 12 of the deck. */
+export const TRAYA_QUADRANTS = [
+  {
+    key: "quick",
+    name: "Quick wins",
+    rule: "High impact, low effort",
+    items: ["Recovery Deep-link", "Pricing Copy", "Assessment Progress", "24h Offer", "CTA Copy"],
+  },
+  {
+    key: "major",
+    name: "Major projects",
+    rule: "High impact, high effort",
+    items: ["AI Journey"],
+  },
+  {
+    key: "fill",
+    name: "Fill-ins",
+    rule: "Low impact, low effort",
+    items: ["AI Previews", "UX Polish"],
+  },
+  {
+    key: "reconsider",
+    name: "Reconsider",
+    rule: "Low impact, high effort",
+    items: [],
+  },
+];
+
+export const TRAYA_ROADMAP: RoadmapMonth[] = [
+  {
+    month: "Month 1",
+    title: "P1 Quick Wins",
+    items: ["Assessment Progress", "Recovery Deep-link", "Pricing Copy", "24h Offer Unlock", "CTA Copy A/B"],
+  },
+  {
+    month: "Month 2",
+    title: "AI and Checkout",
+    items: [
+      "AI Transformation Journey",
+      "AI Before/After previews",
+      "Checkout enhancements",
+      "WhatsApp reminder rev",
+    ],
+  },
+  {
+    month: "Month 3",
+    title: "Test and Iterate",
+    items: ["A/B test winners", "UX polish and haptics", "Funnel deep-dive"],
+  },
+];
+
+export const TRAYA_EXPECTED_IMPACT = [
+  { area: "Assessment", change: "Higher completion rate" },
+  { area: "Purchase intent", change: "Stronger and clearer urgency" },
+  { area: "Recovery", change: "Less friction in the funnel" },
+  { area: "Trust", change: "Improved perceived value" },
+];
+
+export const TRAYA_LEARNINGS = [
+  {
+    n: "01",
+    title: "Small UX changes compound",
+    body: "Tiny improvements in copy, progress indicators and CTAs move conversion meaningfully when they ship together.",
+  },
+  {
+    n: "02",
+    title: "Behavioural psychology drives checkout",
+    body: "Framing, urgency and personalisation shape decisions far more than discount size alone.",
+  },
+  {
+    n: "03",
+    title: "Reducing friction builds trust",
+    body: "Every removed tap, re-auth or moment of doubt is a vote of confidence the user gives back to the brand.",
+  },
 ];
 
 export const SYSTEM_INSTRUCTION = `
-You are an AI assistant for Akshat Saxena's portfolio website. You are speaking to a potential recruiter or client.
-Your goal is to answer questions about Akshat based strictly on his resume context provided below.
-Be professional, enthusiastic, and concise.
+You are an AI assistant for Akshat Saxena's portfolio website. You are speaking to a potential recruiter or hiring manager.
+Answer only from the resume context below. Be concise and lead with the specific outcome or number.
+If the information is not present here, say you do not have it.
 
-Resume Context:
 Name: ${RESUME_DATA.name}
 Title: ${RESUME_DATA.title}
+Focus: ${RESUME_DATA.tagline}
 Contact: ${RESUME_DATA.email}, ${RESUME_DATA.phone}
 Location: ${RESUME_DATA.location}
 
 Summary: ${RESUME_DATA.summary}
 
 Experience:
-${EXPERIENCE_DATA.map(exp => `- ${exp.role} at ${exp.company} (${exp.period}):\n${exp.description.join('\n')}`).join('\n\n')}
+${EXPERIENCE_DATA.map(
+  (e) =>
+    `- ${e.role} at ${e.company} (${e.period}, ${e.location}):\n` +
+    e.description.map((d) => '  * ' + d).join('\n')
+).join('\n\n')}
 
-Projects:
-${PROJECTS_DATA.map(p => `- ${p.title}: ${p.description} (Tech: ${p.technologies.join(', ')})`).join('\n')}
+Case studies:
+${CASE_STUDY_PAGES.map(
+  (c) => `- ${c.title} (${c.type}): ${c.summary}\n  Outcome: ${c.sections.find((s) => s.heading.startsWith('Outcome'))?.body ?? ''}`
+).join('\n\n')}
 
-Education:
-- KiiT University: B.Tech in Computer Technology (Aug 2022 - July 2026)
-- O.P. Jindal School: Senior Secondary (Math & CS)
+Also built:
+${ALSO_BUILT.map((p) => `- ${p.title}: ${p.description}`).join('\n')}
 
-Certifications:
-- On-Premise DATA Visualization Program
-- Foundations of Project Management
-- Corporate Governance
-- Business for Good
-- Product Management First Steps
+Skills:
+${SKILLS_DATA.map((s) => `- ${s.category}: ${s.skills.join(', ')}`).join('\n')}
 
-If asked about something not in this resume, politely state that you only have access to his professional background information provided here.
+Education: ${EDUCATION_DATA.school}, ${EDUCATION_DATA.degree} (${EDUCATION_DATA.period}), CGPA ${EDUCATION_DATA.cgpa}
+
+Certifications: ${CERTIFICATIONS_DATA.map((c) => c.title).join('; ')}
 `;

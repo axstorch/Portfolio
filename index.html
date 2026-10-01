@@ -3,51 +3,100 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Akshat Saxena | Product & Tech</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-        cursor: none; /* Hide default cursor to use custom one */
+
+    <title>Akshat Saxena | Product Manager (APM)</title>
+    <meta
+      name="description"
+      content="Associate Product Manager. CS graduate with two product internships across B2B internal tools and logistics, shipping PRDs, automations and data driven root cause fixes."
+    />
+    <meta name="author" content="Akshat Saxena" />
+    <link rel="canonical" href="https://akshat-saxena-portfolio.vercel.app/" />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Open Graph / WhatsApp and LinkedIn previews -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Akshat Saxena" />
+    <meta property="og:title" content="Akshat Saxena | Product Manager (APM)" />
+    <meta
+      property="og:description"
+      content="Associate Product Manager. CS graduate with two product internships across B2B internal tools and logistics, shipping PRDs, automations and data driven root cause fixes."
+    />
+    <meta property="og:url" content="https://akshat-saxena-portfolio.vercel.app/" />
+    <meta property="og:image" content="https://akshat-saxena-portfolio.vercel.app/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Akshat Saxena, Associate Product Manager" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Akshat Saxena | Product Manager (APM)" />
+    <meta
+      name="twitter:description"
+      content="Associate Product Manager. CS graduate with two product internships across B2B internal tools and logistics, shipping PRDs, automations and data driven root cause fixes."
+    />
+    <meta name="twitter:image" content="https://akshat-saxena-portfolio.vercel.app/og.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+
+    <link rel="stylesheet" href="/styles.css" />
+    <!-- Tailwind is compiled to /styles.css at build time, not loaded from a CDN. -->
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Akshat Saxena",
+        "jobTitle": "Associate Product Manager",
+        "description": "Associate Product Manager. CS graduate with two product internships across B2B internal tools and logistics, shipping PRDs, automations and data driven root cause fixes.",
+        "url": "https://akshat-saxena-portfolio.vercel.app/",
+        "image": "https://akshat-saxena-portfolio.vercel.app/og.png",
+        "email": "mailto:akshatsaxena7974@gmail.com",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Pune",
+          "addressRegion": "Maharashtra",
+          "addressCountry": "IN"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/in/akshat-saxena-5513a8258",
+          "https://github.com/axstorch"
+        ],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Kalinga Institute of Industrial Technology"
+        },
+        "knowsAbout": [
+          "Product management",
+          "PRD writing",
+          "Root cause analysis",
+          "SQL",
+          "Cohort analysis"
+        ]
       }
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', serif;
-      }
-      /* Custom scrollbar for chat */
-      .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-      }
-      .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-      }
-      /* Hide cursor on touch devices to avoid issues */
-      @media (hover: none) and (pointer: coarse) {
-        body {
-          cursor: auto;
-        }
-        .custom-cursor {
-          display: none;
-        }
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
-    "recharts": "https://esm.sh/recharts@^3.5.1",
-    "@google/genai": "https://esm.sh/@google/genai@^1.33.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
+    </script>
+  </head>
+
   <body class="bg-[#F4F4F0] text-[#1C1C1C] antialiased">
     <div id="root"></div>
-  <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="/index.tsx"></script>
+  </body>
 </html>

@@ -1,96 +1,46 @@
-import { title } from 'process';
 import React from 'react';
+import { ArrowUpRight } from 'lucide-react';
+import { Section, Eyebrow } from './Section';
+import { CERTIFICATIONS_DATA } from '../constants';
 
-const CERTIFICATIONS = [
-    {
-        title: 'Foundations of Project Management',
-        issuer: 'Google',
-        url: 'https://www.coursera.org/account/accomplishments/verify/VPIGGNTIVVFV',
-    },
-    {
-        title: 'Product Management First Steps',
-        issuer: 'LinkedIn Learning',
-        url: 'https://www.linkedin.com/learning/certificates/fa42c50c3180fa409d71ae6ca5015321e87876f0a7184de460af13bcfbc61e37',
-    },
-    {
-        title: 'Project Initiation: Starting a Successful Project',
-        issuer: 'Google',
-        url: 'https://www.coursera.org/account/accomplishments/verify/M4CYOA9VRSG1',
-    },
-    {
-        title: 'On-Premise Data Visualization Program',
-        issuer: 'Coursera',
-        url: 'https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Tata/MyXvBcppsW2FkNYCX_Tata_bm7RavEb24C2zq9as_1691496892553_completion_certificate.pdf'
-    },
-    {
-        title: 'Project Planning: Putting it all together',
-        issuer: 'Google',
-        url: 'https://www.coursera.org/account/accomplishments/verify/M4CYOA9VRSG1',
-    },
-
-    {
-
-        title: 'Corporate Governance',
-        issuer: 'Coursera',
-        url: 'https://drive.google.com/file/u/2/d/1fgvRLcJKV1NhCTDXjX8DpDQ8AzAgHAzS/view?usp=drive_link'
-    },
-];
-
+/** Compact single row of small text links, per E3. */
 const Certifications: React.FC = () => {
-    return (
-        <section
-            id="certifications"
-            className="py-24 px-6 md:px-12 bg-[#F4F4F0] text-[#1C1C1C]"
-        >
-            {/* Header */}
-            <div className="mb-16 max-w-3xl">
-                <h2 className="text-4xl md:text-6xl font-serif mb-6">
-                    Certifications
-                </h2>
-                <p className="text-[#666666] leading-relaxed">
-                    Formal learning that strengthened my foundations in product thinking,
-                    governance, and execution.
-                </p>
-            </div>
+  return (
+    <Section
+      id="certifications"
+      tone="cream"
+      aria-label="Certifications"
+      className="py-16 md:py-20 px-6 md:px-12"
+    >
+      <div className="max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8">
+          <h2 className="text-xs uppercase tracking-[0.2em] text-[#8B5E3C] shrink-0 md:w-40">
+            Certifications
+          </h2>
 
-            {/* Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 group-hover:scale-105">
-                {CERTIFICATIONS.map((cert) => {
-                    const isClickable = Boolean(cert.url);
-
-                    const CardContent = (
-                        <>
-                            <h3 className="text-xl font-serif mb-2">
-                                {cert.title}
-                            </h3>
-                            <p className="text-sm text-[#777777]">
-                                {cert.issuer}
-                            </p>
-                        </>
-                    );
-
-                    return isClickable ? (
-                        <a
-                            key={cert.title}
-                            href={cert.url}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="block rounded-xl border border-[#1C1C1C]/10 p-6 bg-white hover:shadow-lg transition-shadow cursor-pointer"
-                        >
-                            {CardContent}
-                        </a>
-                    ) : (
-                        <div
-                            key={cert.title}
-                            className="rounded-xl border border-[#1C1C1C]/10 p-6 bg-white opacity-80"
-                        >
-                            {CardContent}
-                        </div>
-                    );
-                })}
-            </div>
-        </section>
-    );
+          <ul className="flex flex-wrap gap-x-6 gap-y-3">
+            {CERTIFICATIONS_DATA.map((c) => (
+              <li key={c.title}>
+                <a
+                  href={c.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group inline-flex items-baseline gap-1.5 text-sm text-[#333] hover:text-[#8B5E3C] transition-colors"
+                >
+                  {c.title}
+                  <span className="text-[11px] text-[#7A6A5C]">{c.issuer}</span>
+                  <ArrowUpRight
+                    size={11}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </Section>
+  );
 };
 
 export default Certifications;

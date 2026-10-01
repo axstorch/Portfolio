@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------
+   Design tokens. These mirror the existing palette; no new colours
+   or fonts are introduced.
+   --------------------------------------------------------------- */
+
+:root {
+  --paper: #f4f4f0;
+  --paper-cream: #fbf8f4;
+  --ink: #1c1c1c;
+  --brown: #8b5e3c;
+  --brown-light: #c08457;
+  --divider: rgba(28, 28, 28, 0.12);
+  --nav-height: 64px;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Anchors clear the fixed nav, with a little breathing room. */
+  scroll-padding-top: calc(var(--nav-height) + 24px);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  /* 16px floor on mobile */
+  font-size: 16px;
+  line-height: 1.6;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  /* Serif fallback can clip descenders without this. */
+  line-height: 1.1;
+}
+
+/* The custom cursor replaces the native one only on precise pointers.
+   Everything else keeps its system cursor. */
+@media (hover: hover) and (pointer: fine) {
+  body { cursor: none; }
+  a, button, input, textarea, select, summary, [role='button'], [data-native-cursor] {
+    cursor: none;
+  }
+}
+
+/* Focus: always visible, never removed. */
+:focus-visible {
+  outline: 2px solid var(--brown);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Images never overflow their column. */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* The custom cursor is decorative and parks at a negative coordinate until the
+   first mousemove. Without this it can widen the document on some viewports. */
+.custom-cursor {
+  position: fixed;
+  left: -100px;
+  top: -100px;
+  max-width: none;
+}
+
+/* Body copy uses text-base (16px) below md and text-sm from md up, applied
+   with responsive utilities at the call site rather than an override here,
+   so there is no specificity fight with Tailwind's own text-sm. */
+
+/* Motion is opt-out. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
