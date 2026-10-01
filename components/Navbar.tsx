@@ -122,8 +122,9 @@ const Navbar: React.FC = () => {
               : 'bg-transparent border-b border-transparent',
         ].join(' ')}
       >
-        <div className="h-full px-6 md:px-12 flex items-center justify-between">
-          <Link
+        <div className="h-full px-6 md:px-12">
+          <div className="mx-auto w-full max-w-6xl h-full flex items-center justify-between">
+            <Link
             to="/"
             onClick={(e) => {
               e.preventDefault();
@@ -189,6 +190,7 @@ const Navbar: React.FC = () => {
             >
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
+          </div>
           </div>
         </div>
       </header>

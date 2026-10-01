@@ -53,3 +53,24 @@ export const Eyebrow: React.FC<{ children: React.ReactNode; dark?: boolean }> = 
     {children}
   </span>
 );
+
+/**
+ * Shared horizontal container. Every band on the page, and the nav, uses one
+ * of these so the left edge of the logo lines up with the left edge of the
+ * content at every viewport width. Without it the hero and nav run full bleed
+ * while the sections below are inset, which reads as a stretched layout.
+ */
+export const Container: React.FC<{
+  children: React.ReactNode;
+  /** wide = max-w-6xl, reading = max-w-4xl for text-heavy bands. */
+  width?: 'wide' | 'reading';
+  className?: string;
+}> = ({ children, width = 'wide', className = '' }) => (
+  <div
+    className={`mx-auto w-full ${
+      width === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
+    } ${className}`}
+  >
+    {children}
+  </div>
+);

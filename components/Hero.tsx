@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowUpRight, FileText } from 'lucide-react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { RESUME_DATA } from '../constants';
 import { NAV_HEIGHT } from './Navbar';
 
@@ -13,7 +13,7 @@ const Hero: React.FC = () => {
       className="min-h-screen flex flex-col justify-between"
       style={{ paddingTop: NAV_HEIGHT + 48 }}
     >
-      <div className="w-full">
+      <Container>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           <div className="lg:col-span-7">
             <Eyebrow>{RESUME_DATA.title}</Eyebrow>
@@ -64,9 +64,10 @@ const Hero: React.FC = () => {
             <FileText size={14} /> Resume <ArrowUpRight size={12} />
           </a>
         </div>
-      </div>
+      </Container>
 
-      <div className="mt-12 w-full h-[34vh] md:h-[50vh] relative rounded-2xl overflow-hidden bg-stone-300">
+      <Container className="mt-12">
+      <div className="w-full h-[34vh] md:h-[50vh] relative rounded-2xl overflow-hidden bg-stone-300">
         <img
           src="/assets/Perfect_banner-1024w.webp"
           srcSet="
@@ -75,7 +76,7 @@ const Hero: React.FC = () => {
             /assets/Perfect_banner-1600w.webp 1600w,
             /assets/Perfect_banner-2560w.webp 2560w
           "
-          sizes="(max-width: 768px) 100vw, 92vw"
+          sizes="(max-width: 1152px) 100vw, 1152px"
           alt="Akshat Saxena at a product pitch event"
           width={1024}
           height={390}
@@ -84,20 +85,23 @@ const Hero: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
         />
       </div>
+      </Container>
 
-      <div className="mt-8 flex flex-wrap justify-between items-end gap-6 border-t border-[#1C1C1C]/10 pt-4">
-        <div>
-          <span className="block text-xs uppercase tracking-widest text-[#666]">Location</span>
-          <span className="text-sm">{RESUME_DATA.location}</span>
+      <Container className="mt-8">
+        <div className="flex flex-wrap justify-between items-end gap-6 border-t border-[#1C1C1C]/10 pt-4">
+          <div>
+            <span className="block text-xs uppercase tracking-widest text-[#666]">Location</span>
+            <span className="text-sm">{RESUME_DATA.location}</span>
+          </div>
+          <div>
+            <span className="block text-xs uppercase tracking-widest text-[#666] text-right">Status</span>
+            <span className="text-sm flex items-center justify-end gap-2">
+              <span className="w-2 h-2 bg-green-600 rounded-full" aria-hidden="true"></span>
+              Open for Roles
+            </span>
+          </div>
         </div>
-        <div>
-          <span className="block text-xs uppercase tracking-widest text-[#666] text-right">Status</span>
-          <span className="text-sm flex items-center justify-end gap-2">
-            <span className="w-2 h-2 bg-green-600 rounded-full" aria-hidden="true"></span>
-            Open for Roles
-          </span>
-        </div>
-      </div>
+      </Container>
     </Section>
   );
 };
