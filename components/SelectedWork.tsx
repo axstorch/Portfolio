@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { WORK_DATA } from '../constants';
 import { Link } from '../router';
 
@@ -41,8 +41,8 @@ const WorkVisual: React.FC<{ src?: string; alt: string; slotLabel: string }> = (
 
 const SelectedWork: React.FC = () => {
   return (
-    <Section id="work" tone="light" aria-label="Selected work" className="py-20 md:py-28 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <Section id="work" tone="light" aria-label="Selected work" className="py-20 md:py-28">
+      <Container>
         <div className="flex flex-col md:flex-row justify-between items-end gap-4 mb-12 border-b border-[#1C1C1C]/10 pb-6">
           <div>
             <Eyebrow>Case studies</Eyebrow>
@@ -127,7 +127,7 @@ const SelectedWork: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

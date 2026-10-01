@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { Section } from './Section';
+import { Section, Container } from './Section';
 import { RESUME_DATA } from '../constants';
 
 const Contact: React.FC = () => {
@@ -8,9 +8,9 @@ const Contact: React.FC = () => {
     <footer
       id="contact"
       data-section="contact"
-      className="scroll-mt-24 md:scroll-mt-28 py-20 md:py-28 px-6 md:px-12 bg-[#F4F4F0] text-[#1C1C1C]"
+      className="scroll-mt-24 md:scroll-mt-28 py-20 md:py-28 bg-[#F4F4F0] text-[#1C1C1C]"
     >
-      <div className="max-w-4xl mx-auto text-center">
+      <Container className="text-center">
         <h2 className="text-4xl md:text-6xl font-serif mb-8">Let's talk</h2>
 
         <a
@@ -45,7 +45,7 @@ const Contact: React.FC = () => {
             Behind the Scenes
           </a>
         </div>
-      </div>
+      </Container>
     </footer>
   );
 };

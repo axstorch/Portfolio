@@ -76,7 +76,7 @@ const Hero: React.FC = () => {
             /assets/Perfect_banner-1600w.webp 1600w,
             /assets/Perfect_banner-2560w.webp 2560w
           "
-          sizes="(max-width: 1152px) 100vw, 1152px"
+          sizes="(max-width: 1280px) 100vw, 1280px"
           alt="Akshat Saxena at a product pitch event"
           width={1024}
           height={390}

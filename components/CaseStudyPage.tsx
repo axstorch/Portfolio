@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, FileText } from 'lucide-react';
-import { Eyebrow } from './Section';
+import { Eyebrow, Container } from './Section';
 import { CASE_STUDY_PAGES, RESUME_DATA, TRAYA_ROADMAP, TRAYA_EXPECTED_IMPACT, TRAYA_LEARNINGS, TRAYA_INSIGHTS } from '../constants';
 import { Link, navigate } from '../router';
 import { TrayaFunnel, ImpactEffortMatrix } from './trayaVisuals';
@@ -81,7 +81,7 @@ const CaseStudyPage: React.FC<{ slug: string }> = ({ slug }) => {
 
   return (
     <main id="main" className="bg-[#F4F4F0] text-[#1C1C1C]">
-      <div className="px-6 md:px-12 pt-32 md:pt-40 pb-24 max-w-4xl mx-auto">
+      <Container className="pt-32 md:pt-40 pb-24">
         {/* Header */}
         <Eyebrow>{study.type}</Eyebrow>
 
@@ -309,7 +309,7 @@ const CaseStudyPage: React.FC<{ slug: string }> = ({ slug }) => {
             </a>
           </div>
         </div>
-      </div>
+      </Container>
     </main>
   );
 };

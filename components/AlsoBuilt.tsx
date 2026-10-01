@@ -1,13 +1,13 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { ALSO_BUILT, PROJECTS_DATA } from '../constants';
 import { Link } from '../router';
 
 const AlsoBuilt: React.FC = () => {
   return (
-    <Section id="also-built" tone="cream" aria-label="Also built" className="py-20 md:py-28 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <Section id="also-built" tone="cream" aria-label="Also built" className="py-20 md:py-28">
+      <Container>
         <div className="mb-10">
           <Eyebrow>Side work</Eyebrow>
           <h2 className="text-3xl md:text-5xl leading-[0.95] font-serif">
@@ -50,7 +50,7 @@ const AlsoBuilt: React.FC = () => {
             );
           })}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

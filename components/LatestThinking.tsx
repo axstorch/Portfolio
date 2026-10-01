@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowRight, Linkedin, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { LINKEDIN_POSTS, RESUME_DATA } from '../constants';
 import type { LinkedInPost } from '../types';
 
@@ -81,8 +81,8 @@ const LatestThinking: React.FC = () => {
   };
 
   return (
-    <Section id="posts" tone="light" aria-label="Latest thinking" className="py-20 md:py-24 px-6 md:px-12">
-      <div className="max-w-4xl mx-auto">
+    <Section id="posts" tone="light" aria-label="Latest thinking" className="py-20 md:py-24">
+      <Container>
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
           <div>
             <Eyebrow>Writing</Eyebrow>
@@ -170,7 +170,7 @@ const LatestThinking: React.FC = () => {
             </button>
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

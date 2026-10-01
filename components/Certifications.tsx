@@ -1,6 +1,6 @@
 import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { CERTIFICATIONS_DATA } from '../constants';
 
 /** Compact single row of small text links, per E3. */
@@ -10,9 +10,9 @@ const Certifications: React.FC = () => {
       id="certifications"
       tone="cream"
       aria-label="Certifications"
-      className="py-16 md:py-20 px-6 md:px-12"
+      className="py-16 md:py-20"
     >
-      <div className="max-w-6xl mx-auto">
+      <Container>
         <div className="flex flex-col md:flex-row md:items-baseline gap-3 md:gap-8">
           <h2 className="text-xs uppercase tracking-[0.2em] text-[#8B5E3C] shrink-0 md:w-40">
             Certifications
@@ -38,7 +38,7 @@ const Certifications: React.FC = () => {
             ))}
           </ul>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { RESUME_DATA } from '../constants';
 import { Link, navigate } from '../router';
+import { Container } from './Section';
 
 /** Height of the fixed bar, in px. Kept in sync with the h-16 class below. */
 export const NAV_HEIGHT = 64;
@@ -122,9 +123,8 @@ const Navbar: React.FC = () => {
               : 'bg-transparent border-b border-transparent',
         ].join(' ')}
       >
-        <div className="h-full px-6 md:px-12">
-          <div className="mx-auto w-full max-w-6xl h-full flex items-center justify-between">
-            <Link
+        <Container className="h-full flex items-center justify-between">
+          <Link
             to="/"
             onClick={(e) => {
               e.preventDefault();
@@ -191,8 +191,7 @@ const Navbar: React.FC = () => {
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
-          </div>
-        </div>
+        </Container>
       </header>
 
       {/* Full-screen mobile overlay */}

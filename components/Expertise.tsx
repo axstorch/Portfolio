@@ -1,5 +1,5 @@
 import React from 'react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { SKILLS_DATA } from '../constants';
 
 /**
@@ -8,8 +8,8 @@ import { SKILLS_DATA } from '../constants';
  */
 const Expertise: React.FC = () => {
   return (
-    <Section id="expertise" tone="dark" aria-label="Expertise" className="py-20 md:py-28 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <Section id="expertise" tone="dark" aria-label="Expertise" className="py-20 md:py-28">
+      <Container>
         <div className="mb-12">
           <Eyebrow dark>Toolkit</Eyebrow>
           <h2 className="text-4xl md:text-6xl leading-[0.95] font-serif text-[#F4F4F0]">
@@ -36,7 +36,7 @@ const Expertise: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

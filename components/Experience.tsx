@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { EXPERIENCE_DATA, EDUCATION_DATA, shortMonths } from '../constants';
 import type { ExperienceItem } from '../types';
 
@@ -76,8 +76,8 @@ const Role: React.FC<{ exp: ExperienceItem }> = ({ exp }) => {
 
 const Experience: React.FC = () => {
   return (
-    <Section id="experience" tone="white" aria-label="Experience" className="py-20 md:py-28 px-6 md:px-12">
-      <div className="max-w-4xl mx-auto">
+    <Section id="experience" tone="white" aria-label="Experience" className="py-20 md:py-28">
+      <Container>
         <div className="text-center mb-14">
           <div className="flex justify-center">
             <Eyebrow>Experience</Eyebrow>
@@ -106,7 +106,7 @@ const Experience: React.FC = () => {
             <p className="text-sm text-[#333] mt-2">CGPA {EDUCATION_DATA.cgpa}</p>
           </div>
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

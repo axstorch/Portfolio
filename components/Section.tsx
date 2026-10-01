@@ -55,22 +55,21 @@ export const Eyebrow: React.FC<{ children: React.ReactNode; dark?: boolean }> = 
 );
 
 /**
- * Shared horizontal container. Every band on the page, and the nav, uses one
- * of these so the left edge of the logo lines up with the left edge of the
- * content at every viewport width. Without it the hero and nav run full bleed
- * while the sections below are inset, which reads as a stretched layout.
+ * The one horizontal container. Every band on the page and the nav use it, so
+ * the logo, the hero and every section share a left edge at every viewport
+ * width. It owns the gutter padding too, which is why sections no longer set
+ * px-6 md:px-12 themselves.
+ *
+ * 1280px (max-w-7xl) rather than 1152px: at the old cap the page read as a
+ * narrow ribbon down the middle of a desktop screen, with a lot of dead space
+ * either side. Individual paragraphs still carry their own ch-based caps so
+ * line length stays readable at the wider measure.
  */
 export const Container: React.FC<{
   children: React.ReactNode;
-  /** wide = max-w-6xl, reading = max-w-4xl for text-heavy bands. */
-  width?: 'wide' | 'reading';
   className?: string;
-}> = ({ children, width = 'wide', className = '' }) => (
-  <div
-    className={`mx-auto w-full ${
-      width === 'wide' ? 'max-w-6xl' : 'max-w-4xl'
-    } ${className}`}
-  >
+}> = ({ children, className = '' }) => (
+  <div className={`mx-auto w-full max-w-7xl px-6 md:px-12 ${className}`}>
     {children}
   </div>
 );

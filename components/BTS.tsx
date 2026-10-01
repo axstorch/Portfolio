@@ -1,11 +1,11 @@
 import React from 'react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { BTS_IMAGES } from '../constants';
 
 const BTS: React.FC = () => {
   return (
-    <Section id="bts" tone="stone" aria-label="Behind the scenes" className="py-16 md:py-20 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <Section id="bts" tone="stone" aria-label="Behind the scenes" className="py-16 md:py-20">
+      <Container>
         <div className="mb-8">
           <Eyebrow>Off the record</Eyebrow>
           <h2 className="text-3xl md:text-4xl font-serif italic">Behind the Scenes</h2>
@@ -32,7 +32,7 @@ const BTS: React.FC = () => {
             </figure>
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };

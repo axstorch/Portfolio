@@ -1,11 +1,11 @@
 import React from 'react';
-import { Section, Eyebrow } from './Section';
+import { Section, Eyebrow, Container } from './Section';
 import { PROOF_STATS } from '../constants';
 
 const ProofStrip: React.FC = () => {
   return (
-    <Section id="proof" tone="cream" aria-label="Key results" className="py-16 md:py-20 px-6 md:px-12">
-      <div className="max-w-6xl mx-auto">
+    <Section id="proof" tone="cream" aria-label="Key results" className="py-16 md:py-20">
+      <Container>
         <Eyebrow>Proof</Eyebrow>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-[#1C1C1C]/10 rounded-2xl overflow-hidden border border-[#1C1C1C]/10">
@@ -21,7 +21,7 @@ const ProofStrip: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </Section>
   );
 };
