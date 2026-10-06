@@ -42,8 +42,8 @@ function App() {
             <ProofStrip />
             <SelectedWork />
             <Experience />
-            <AlsoBuilt />
             <Expertise />
+            <AlsoBuilt />
             <LatestThinking />
             <Certifications />
             <BTS />

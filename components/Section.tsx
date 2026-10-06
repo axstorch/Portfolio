@@ -60,16 +60,20 @@ export const Eyebrow: React.FC<{ children: React.ReactNode; dark?: boolean }> = 
  * width. It owns the gutter padding too, which is why sections no longer set
  * px-6 md:px-12 themselves.
  *
- * 1280px (max-w-7xl) rather than 1152px: at the old cap the page read as a
- * narrow ribbon down the middle of a desktop screen, with a lot of dead space
- * either side. Individual paragraphs still carry their own ch-based caps so
- * line length stays readable at the wider measure.
+ * 1600px rather than the old 1280px cap: at 1280 the page read as a narrow
+ * ribbon down the middle of a wide desktop screen, with dead gutters either
+ * side. The cap now sits above the common 1512px laptop so the measure only
+ * stops growing on very large displays, and the gutter grows from 48px to 64px
+ * at xl so wide screens do not look edge-to-edge cramped.
+ *
+ * Individual paragraphs still carry their own ch-based caps (46-62ch), so line
+ * length stays readable at the wider measure.
  */
 export const Container: React.FC<{
   children: React.ReactNode;
   className?: string;
 }> = ({ children, className = '' }) => (
-  <div className={`mx-auto w-full max-w-7xl px-6 md:px-12 ${className}`}>
+  <div className={`mx-auto w-full max-w-[1600px] px-6 md:px-12 xl:px-16 ${className}`}>
     {children}
   </div>
 );

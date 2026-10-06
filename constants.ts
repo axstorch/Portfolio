@@ -23,7 +23,6 @@ export const RESUME_DATA = {
   location: "Pune, Maharashtra, India",
   linkedin: "https://www.linkedin.com/in/akshat-saxena-5513a8258",
   github: "https://github.com/axstorch",
-  // TODO: replace with the hosted PDF for the APM resume.
   resume: "https://drive.google.com/file/d/1Ye-W37kHNLRmzGtryg6cORLl_PxkkdRH/view?usp=drive_link",
   summary:
     "Computer Science graduate with 2 product internships across B2B internal tools and logistics. Shipped CRM automations, a CMS revamp, and data-driven root-cause analyses that changed team decisions. Comfortable going from SQL and data insights to requirements and engineering tickets.",
@@ -74,12 +73,15 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     company: "AmberStudent",
     period: "May 2026 - Present",
     location: "Pune, India",
-    label: "Root-cause analysis",
+    logo: "/assets/logos/amberstudent.jpg",
+    /* Bullet text below is verbatim from Akshat_saxena_resume_APM.pdf, in
+       resume order. The resume has no bolded bullet prefixes, so `label` is
+       omitted and the bullets render as plain text. */
     description: [
-      "Root-cause analysis: Traced a 23% YoY drop in US call pickup rates to agents no longer leaving voicemails, which a 15-second threshold had counted as pickups; sales resumed voicemail outreach.",
-      "CMS revamp: Owned requirements, prioritisation and QA; caught 12+ pre-launch issues, including data loss on saves and room-level currency overrides.",
-      "Automation: Resolved 40+ CRM/CMS escalations and converted the top recurring types into 3 shipped automations.",
-      "Email fix: Found duplicate email sequences affecting 18.7K students over 12 months; shipped consolidation to one combined email per student.",
+      "Led RCA on a 23% YoY drop in US call pickup rates; when Metabase segmentation by time, agent, and region showed no clear driver, reviewed 20+ Plivo call recordings and traced the drop to agents no longer leaving voicemails, which the 15-second threshold had been counting as pickups. Findings, presented at the bi-weekly product review, led the sales team to resume voicemail outreach.",
+      "Owned requirements, prioritisation, and QA for a CMS revamp used by supply, content, and SEO teams to manage property and region listings; scoped P0s around the supply team's new-hire onboarding deadline and caught 12+ pre-launch issues, including data loss on saves and room-level currency overrides that risked pricing errors.",
+      "Resolved 40+ CRM/CMS escalations and converted the top recurring types into 3 shipped automations: auto-resetting call mappings for repeat leads with non-Indian numbers (4-5 manual resets/day), locking lead-state changes after agent log-off to stop false call-duration flags, and auto-closing internal test leads.",
+      "Traced a student blocking Amber's emails to duplicate email sequences triggered by multi-property booking forms, an issue affecting 18.7K students over 12 months; proposed and shipped consolidation logic that sends one combined email per student.",
     ],
   },
   {
@@ -88,12 +90,13 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     company: "Swift Logistics",
     period: "January 2026 - March 2026",
     location: "Bengaluru, India",
-    label: "Support automation",
+    logo: "/assets/logos/swift.jpg",
+    /* Verbatim from the resume, in resume order. See the AmberStudent note. */
     description: [
-      "Support automation: Owned first-line tech escalations from 35-40 account managers across 300+ cases, then automated the top recurring types with an AI-assisted Slack bot, cutting average resolution time by 32%.",
-      "Revenue leakage: Caught a vendor billing bug where ~23K calls over 6 months were returned as successful with no duration or recording URL, so unconnected calls were being billed. Exotel confirmed the bug and waived charges for all flagged call IDs.",
-      "Account rescue: Traced a prime seller's drop in shipments to a Shopify pickup-address change never synced to the system; by then 271 shipments had gone to competitors. Walked the seller through the fix and monitored volumes back to normal.",
-      "Engineering escalation: Diagnosed a shipment-export bug where pagination without a fixed sort order silently dropped or duplicated entries. Root cause verified and fixed by engineering.",
+      "Caught a vendor billing bug in Exotel's call API: ~23K calls over 6 months were returned as \"successful\" with no duration or recording URL, meaning unconnected calls were being billed. Ruled out API changes on both sides and escalated; Exotel confirmed the bug and waived charges for all flagged call IDs.",
+      "Traced a prime seller's drop in daily shipments to a Shopify pickup-address change that was never synced to our system, causing every shipment request to be silently rejected; by then, 271 shipments had gone to competitors. Escalated to the account manager, walked the seller through the fix directly, and monitored volumes back to normal.",
+      "Owned first-line tech escalations from 35-40 account managers across 300+ cases, then automated the top recurring types (pincode serviceability failures at 10-12/day and courier-allocation queries) with an AI-assisted Slack bot that had read-only MongoDB and BigQuery access. This cut average resolution time for low-to-medium escalations by 32%.",
+      "Diagnosed a shipment-export bug where pagination without a fixed sort order, under a 2,000-row limit, silently dropped or duplicated entries across exports; root cause verified and fixed by engineering.",
     ],
   },
   {
@@ -103,6 +106,7 @@ export const EXPERIENCE_DATA: ExperienceItem[] = [
     period: "June 2025 - September 2025",
     location: "Hyderabad, India",
     label: "Competitive analysis",
+    logo: "/assets/logos/sor.jpg",
     description: [
       "Competitive analysis: Led structured competitor and feature-gap analyses for 4 client products, directly informing roadmap priorities and product positioning decisions.",
       "Cross-functional: Acted as a coordination bridge between field teams and leadership, synthesizing updates from 6 on-ground associates into clear, decision-ready insights.",
@@ -122,8 +126,7 @@ export const WORK_DATA: WorkCard[] = [
     outcome: "Retention nearly doubles for users with 10+ wishlisted items.",
     tags: ["Retention", "Cohort analysis", "A/B testing", "Lifecycle journeys"],
     href: "/work/newme",
-    // TODO: add the retention-by-wishlist-count bar chart.
-    image: undefined,
+    image: "/assets/work/newme-retention.png",
     imageAlt: "Bar chart showing retention rate rising with wishlist count",
     imageSlotLabel: "NEWME_IMAGE",
   },
@@ -137,8 +140,7 @@ export const WORK_DATA: WorkCard[] = [
     outcome: "Roadmap targets +30% 24-hour conversion.",
     tags: ["Funnel analysis", "PRD", "Roadmapping", "Prioritisation"],
     href: "/work/traya",
-    // TODO: add the impact/effort matrix, with personal details blurred.
-    image: undefined,
+    image: "/assets/work/traya-impact-effort.png",
     imageAlt: "Impact against effort matrix plotting eight prioritised enhancements",
     imageSlotLabel: "TRAYA_IMAGE",
     badge: "Interview case study",
@@ -153,8 +155,7 @@ export const WORK_DATA: WorkCard[] = [
     outcome: "Explicit trade-offs: what's in the MVP and what is deliberately out.",
     tags: ["PRD", "MVP scoping", "Marketplace", "Requirements"],
     href: "/work/chotu",
-    // TODO: add the buyer journey flow diagram.
-    image: undefined,
+    image: "/assets/work/chotu-journey.png",
     imageAlt: "Buyer journey flow diagram from order to fulfilment",
     imageSlotLabel: "CHOTU_IMAGE",
   },
@@ -167,8 +168,7 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
     summary: "Defining and improving retention for a wishlist driven commerce product.",
     role: "Author",
     type: "Case study",
-    // TODO: add the date from the source document.
-    date: "",
+    date: "Jan 2026",
     sections: [
       {
         heading: "Context",
@@ -196,11 +196,10 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
       },
     ],
     deliverables: [
-      { alt: "Retention by wishlist count bar chart", caption: "Retention by wishlist count", slotLabel: "NEWME_IMAGE" },
-      { alt: "Cohort and journey slide", caption: "Cohorts and lifecycle journeys", slotLabel: "NEWME_IMAGE_2" },
+      { src: "/assets/work/newme-retention.png", alt: "Retention by wishlist count bar chart", caption: "Retention by wishlist count", slotLabel: "NEWME_IMAGE" },
+      { src: "/assets/work/newme-journey.png", alt: "Lifecycle journey flow across the three retention cohorts", caption: "Lifecycle journey flow", slotLabel: "NEWME_IMAGE_2" },
     ],
-    // TODO: add the full case study link.
-    deckUrl: undefined,
+    deckUrl: "https://drive.google.com/file/d/1-Pxwol1QG137sGJvZ1SNZaS1JnjIlhLz/view?usp=drive_link",
     deckLabel: "View full case study",
   },
   {
@@ -209,8 +208,7 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
     summary: "Improving signup to purchase conversion, using funnel data shared by the company.",
     role: "Author",
     type: "Case study",
-    // TODO: add the date from the source document.
-    date: "",
+    date: "Jan 2026",
     sections: [
       {
         heading: "Context",
@@ -226,7 +224,7 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
       },
       {
         heading: "Deliverables",
-        body: "8 prioritised enhancements, each with the problem, the proposed solution, and an effort and impact rating. An impact against effort matrix placing all 8 into quadrants: 5 quick wins, 1 major project, 2 fill-ins and none to reconsider. A 3-month roadmap sequencing them, and a full PRD for deep-linking WhatsApp and SMS recovery messages into a pre-filled in-app checkout, including analytics events, risks, a 6-week rollout and click-to-purchase as the primary metric.",
+        body: "8 prioritised enhancements, each with the problem, the proposed solution, and an effort and impact rating. An impact against effort matrix placing all 8 into quadrants: 5 quick wins, 2 major projects, 1 fill-in and none to reconsider. A 3-month roadmap sequencing them, and a full PRD for deep-linking WhatsApp and SMS recovery messages into a pre-filled in-app checkout, including analytics events, risks, a 6-week rollout and click-to-purchase as the primary metric.",
       },
       {
         heading: "Outcome / Decision",
@@ -240,10 +238,9 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
     deliverables: [
       { alt: "Conversion funnel by stage", caption: "Funnel by stage", slotLabel: "traya:funnel" },
       { alt: "Impact against effort matrix", caption: "Impact against effort", slotLabel: "traya:matrix" },
-      { alt: "Deep-link checkout PRD page", caption: "Deep-link checkout PRD", slotLabel: "traya:prd" },
+      { src: "/assets/work/traya-prd.png", alt: "Deep-link checkout PRD page", caption: "Deep-link checkout PRD", slotLabel: "traya:prd", href: "https://drive.google.com/file/d/1r2W6zmFs-RhAYRgZZuclasMElO2KXolo/view?usp=drive_link" },
     ],
-    // TODO: add the full deck link.
-    deckUrl: undefined,
+    deckUrl: "https://drive.google.com/file/d/19lH1FvUJnS90CiY9vrb_BTWvCCcRMEEm/view?usp=drive_link",
     deckLabel: "View full case study",
   },
   {
@@ -280,11 +277,10 @@ export const CASE_STUDY_PAGES: CaseStudyPage[] = [
       },
     ],
     deliverables: [
-      { alt: "Buyer journey flow diagram", caption: "Buyer journey", slotLabel: "CHOTU_IMAGE" },
-      { alt: "Persona and requirements map", caption: "Personas and MVP scope", slotLabel: "CHOTU_IMAGE_2" },
+      { src: "/assets/work/chotu-journey.png", alt: "End-to-end buyer journey from order to delivery and refund", caption: "Buyer journey", slotLabel: "CHOTU_IMAGE" },
+      { src: "/assets/work/chotu-personas.png", alt: "Persona definitions for the buyer, kirana owner and delivery partner", caption: "Personas", slotLabel: "CHOTU_IMAGE_2" },
     ],
-    // TODO: add the full PRD link.
-    deckUrl: undefined,
+    deckUrl: "https://drive.google.com/file/d/1xtN0crc_3Xr2lclhGWEbjlzhu8klH5zr/view?usp=drive_link",
     deckLabel: "View full PRD",
   },
 ];
@@ -640,8 +636,8 @@ export const TRAYA_INSIGHTS: TrayaInsight[] = [
       "Haptic feedback on key actions",
       "Consistent loading states",
     ],
-    effort: "Medium",
-    impact: "Medium",
+    effort: "High",
+    impact: "High",
     priority: "P2",
   },
 ];
@@ -658,13 +654,13 @@ export const TRAYA_QUADRANTS = [
     key: "major",
     name: "Major projects",
     rule: "High impact, high effort",
-    items: ["AI Journey"],
+    items: ["AI Journey", "AI Previews"],
   },
   {
     key: "fill",
     name: "Fill-ins",
     rule: "Low impact, low effort",
-    items: ["AI Previews", "UX Polish"],
+    items: ["UX Polish"],
   },
   {
     key: "reconsider",

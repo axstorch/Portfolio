@@ -99,6 +99,8 @@ export interface Deliverable {
   caption: string;
   /** Label shown when the file has not been added yet. */
   slotLabel?: string;
+  /** External document this deliverable came from, linked from the caption. */
+  href?: string;
 }
 
 export interface CaseStudyPage {

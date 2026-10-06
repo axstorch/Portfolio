@@ -17,6 +17,11 @@ experiment/
 *.pptx
 Akshat_saxena_resume_APM.pdf
 
+# Originals behind the trimmed copies in public/assets. The deployable
+# versions are committed; these are the working files they were cut from.
+Screenshots/
+Screenshot *.png
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

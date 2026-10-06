@@ -98,8 +98,10 @@ const LatestThinking: React.FC = () => {
           </a>
         </div>
 
-        {/* Arrows sit inside the container, 16px from each edge. */}
-        <div className="relative px-0 sm:px-12">
+        {/* Arrows sit inside the wrapper, 16px from each edge. The wrapper is capped
+            and centred: it holds a single card, which would otherwise stretch
+            the full width of the now-wider page container. */}
+        <div className="relative px-0 sm:px-12 max-w-4xl mx-auto">
           <button
             type="button"
             onClick={prev}

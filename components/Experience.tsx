@@ -48,7 +48,8 @@ const Role: React.FC<{ exp: ExperienceItem }> = ({ exp }) => {
           <p className="text-lg font-serif italic text-[#8B5E3C]">{exp.company}</p>
         </div>
 
-        <ul className="space-y-2.5">
+        {/* Capped so the bullets stay readable now the container is wider. */}
+        <ul className="space-y-2.5 max-w-[85ch]">
           {visible.map((item, i) => (
             <li
               key={i}

@@ -24,7 +24,20 @@ const DeliverableSlot: React.FC<{ d: Deliverable }> = ({ d }) => {
             className="w-full"
           />
         </a>
-        <figcaption className="text-xs text-[#6B5D50] mt-2">{d.caption}</figcaption>
+        {d.href ? (
+          <figcaption className="text-xs text-[#6B5D50] mt-2">
+            <a
+              href={d.href}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 hover:text-[#8B5E3C] transition-colors"
+            >
+              {d.caption} <ArrowUpRight size={11} />
+            </a>
+          </figcaption>
+        ) : (
+          <figcaption className="text-xs text-[#6B5D50] mt-2">{d.caption}</figcaption>
+        )}
       </figure>
     );
   }
@@ -47,16 +60,42 @@ const DeliverableSlot: React.FC<{ d: Deliverable }> = ({ d }) => {
     );
   }
 
+  /*
+   * Placeholder frame. When the deliverable has a document behind it the
+   * whole frame becomes the link and carries a visible CTA, rather than
+   * hiding the URL in caption-sized grey text where nobody finds it.
+   */
+  const frame = (
+    <div
+      role="img"
+      aria-label={`${d.alt}. Image pending: ${d.slotLabel}`}
+      className="aspect-[4/3] rounded-xl border border-dashed border-[#8B5E3C]/45 bg-[#FBF8F4] flex flex-col items-center justify-center gap-3 text-center px-6"
+    >
+      <span className="text-[10px] uppercase tracking-[0.2em] text-[#8B5E3C]">{d.slotLabel}</span>
+      <span className="text-xs text-[#6B5D50] max-w-[30ch] leading-[1.6]">{d.alt}</span>
+
+      {d.href && (
+        <span className="inline-flex items-center gap-2 mt-2 px-5 py-2.5 bg-[#1C1C1C] text-[#F4F4F0] rounded-full text-[10px] uppercase tracking-widest">
+          Open the document <ArrowUpRight size={12} />
+        </span>
+      )}
+    </div>
+  );
+
   return (
     <figure>
-      <div
-        role="img"
-        aria-label={`${d.alt}. Image pending: ${d.slotLabel}`}
-        className="aspect-[4/3] rounded-xl border border-dashed border-[#8B5E3C]/45 bg-[#FBF8F4] flex flex-col items-center justify-center gap-3 text-center px-6"
-      >
-        <span className="text-[10px] uppercase tracking-[0.2em] text-[#8B5E3C]">{d.slotLabel}</span>
-        <span className="text-xs text-[#6B5D50] max-w-[30ch] leading-[1.6]">{d.alt}</span>
-      </div>
+      {d.href ? (
+        <a
+          href={d.href}
+          target="_blank"
+          rel="noreferrer"
+          className="block rounded-xl hover:opacity-90 transition-opacity"
+        >
+          {frame}
+        </a>
+      ) : (
+        frame
+      )}
       <figcaption className="text-xs text-[#6B5D50] mt-2">{d.caption}</figcaption>
     </figure>
   );
