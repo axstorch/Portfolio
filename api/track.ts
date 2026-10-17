@@ -190,6 +190,19 @@ function prune(now: number): void {
   }
 }
 
+/**
+ * Ends the request and records *why*, in an X-Track header.
+ *
+ * Without this, a misconfigured webhook was indistinguishable from a working
+ * one: both answered 204, so "no email" gave no clue where the event died.
+ * The header reveals only whether the webhook is configured, never the URL.
+ */
+function respond(res: ServerResponse, code: number, why: string): void {
+  res.setHeader('X-Track', why);
+  res.statusCode = code;
+  res.end();
+}
+
 function firstForwardedIp(req: IncomingMessage): string {
   // Vercel sets x-forwarded-for to the visitor's address. x-real-ip is a
   // fallback for local `vercel dev` and proxied setups.
@@ -203,8 +216,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method !== 'POST') {
-    res.statusCode = 405;
-    res.end();
+    respond(res, 405, 'method-not-allowed');
     return;
   }
 
@@ -214,13 +226,11 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   if (origin) {
     try {
       if (new URL(origin).host !== header(req, 'host')) {
-        res.statusCode = 403;
-        res.end();
+        respond(res, 403, 'origin-rejected');
         return;
       }
     } catch {
-      res.statusCode = 403;
-      res.end();
+      respond(res, 403, 'origin-rejected');
       return;
     }
   }
@@ -229,8 +239,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   try {
     raw = await readBody(req);
   } catch {
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'body-too-large');
     return;
   }
 
@@ -238,23 +247,20 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   try {
     body = JSON.parse(raw || '{}');
   } catch {
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'malformed-body');
     return;
   }
 
   const event = clean(body.event, 40);
   if (!ALLOWED_EVENTS.has(event)) {
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'unknown-event');
     return;
   }
 
   const ua = header(req, 'user-agent');
   const info = describeUserAgent(ua);
   if (info.isBot) {
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'bot-filtered');
     return;
   }
 
@@ -275,8 +281,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   const key = `${visitorKey}:${reportedEvent}:${path}`;
   const lastSent = recent.get(key) || 0;
   if (now - lastSent < window) {
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'duplicate-suppressed');
     return;
   }
   recent.set(key, now);
@@ -314,23 +319,39 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       console.warn('[track] TRACK_WEBHOOK_URL is not set, events are being dropped.');
       warnedAboutMissingWebhook = true;
     }
-    res.statusCode = 204;
-    res.end();
+    respond(res, 204, 'no-webhook-configured');
     return;
   }
 
   try {
-    await fetch(webhook, {
+    const delivered = await fetch(webhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
       // A slow Sheet append must not hold the visitor's request open.
       signal: AbortSignal.timeout(4000),
     });
+
+    /*
+     * fetch only rejects on a network failure. A webhook that answers 404 or
+     * 403 resolves happily, which is exactly what happens when the URL points
+     * at the /dev version instead of /exec, or when the deployment is not
+     * shared with "Anyone". Those two mistakes used to look identical to
+     * success from out here, so they are now named explicitly.
+     */
+    if (!delivered.ok) {
+      console.error(
+        `[track] webhook responded ${delivered.status}. Check that TRACK_WEBHOOK_URL ends in /exec ` +
+          'and that the Apps Script deployment allows access from Anyone.'
+      );
+      respond(res, 204, `webhook-error-${delivered.status}`);
+      return;
+    }
   } catch (err) {
     console.error('[track] webhook delivery failed:', (err as Error).message);
+    respond(res, 204, 'webhook-unreachable');
+    return;
   }
 
-  res.statusCode = 204;
-  res.end();
+  respond(res, 204, 'forwarded');
 }
