@@ -22,12 +22,94 @@
  *
  * It always answers 204, even when the webhook is missing or broken, because
  * the site must keep working when the tracker does not.
+ *
+ * ------------------------------------------------------------------
+ * THIS FILE IS DELIBERATELY SELF-CONTAINED. DO NOT IMPORT ../lib/*.
+ * ------------------------------------------------------------------
+ * The first version imported the UA parser from ../lib/useragent. Vercel
+ * builds a function from its own entrypoint and does not reliably bundle
+ * files from outside api/, so the import failed to resolve and every single
+ * request died with FUNCTION_INVOCATION_FAILED. The client keeps using
+ * lib/useragent.ts, so the two copies below can drift apart; if you change
+ * the bot pattern here, change it there too.
  */
 
 import { createHash } from 'node:crypto';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-import { clean, describeUserAgent } from '../lib/useragent';
+/* ------------------------------------------------------------------ */
+/* UA parsing, duplicated from lib/useragent.ts on purpose             */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Crawlers, link unfurlers and monitoring agents. A visit from these is not a
+ * person reading the site, so it must never trigger an email.
+ *
+ * Slackbot, WhatsApp and LinkedInBot appear because LinkedIn, Slack and
+ * WhatsApp fetch a URL whenever someone shares it, which is not a visit.
+ */
+const BOT_PATTERN =
+  /bot\b|bot_|crawler|spider|crawling|slurp|scrapy|preview|facebookexternalhit|whatsapp|telegrambot|slackbot|discordbot|linkedinbot|embedly|quora link preview|pinterest|vkshare|skypeuripreview|headless|phantomjs|chrome-lighthouse|ahrefs|semrush|mj12|dotbot|petalbot|applebot|gptbot|chatgpt-user|perplexity|claudebot|ccbot|dataprovider|pingdom|gtmetrix|webpagetest/i;
+
+interface DeviceInfo {
+  device: string;
+  browser: string;
+  os: string;
+  isBot: boolean;
+}
+
+function isBotUserAgent(ua: string): boolean {
+  if (!ua) return true;
+  return BOT_PATTERN.test(ua);
+}
+
+/** Order matters: each check assumes the ones after it did not match. */
+function describeUserAgent(ua: string): DeviceInfo {
+  const isBot = isBotUserAgent(ua);
+  const s = (ua || '').toLowerCase();
+
+  let device = 'Desktop';
+  if (isBot) {
+    device = 'Bot';
+  } else if (/ipad|tablet|playbook|silk|(android(?!.*mobile))/.test(s)) {
+    device = 'Tablet';
+  } else if (/mobi|iphone|ipod|android|blackberry|windows phone|opera mini/.test(s)) {
+    device = 'Mobile';
+  }
+
+  let browser = 'Other';
+  if (/edg\//.test(s)) browser = 'Edge';
+  else if (/opr\/|opera/.test(s)) browser = 'Opera';
+  else if (/samsungbrowser/.test(s)) browser = 'Samsung Internet';
+  else if (/firefox\/|fxios/.test(s)) browser = 'Firefox';
+  else if (/chrome\/|crios/.test(s)) browser = 'Chrome';
+  else if (/safari\//.test(s)) browser = 'Safari';
+  else if (/curl\/|wget\/|python-requests|node-fetch|axios|go-http-client/.test(s)) browser = 'Script';
+
+  let os = 'Other';
+  if (/windows/.test(s)) os = 'Windows';
+  else if (/iphone|ipad|ipod/.test(s)) os = 'iOS';
+  else if (/android/.test(s)) os = 'Android';
+  else if (/mac os x|macintosh/.test(s)) os = 'macOS';
+  else if (/cros/.test(s)) os = 'ChromeOS';
+  else if (/linux|x11/.test(s)) os = 'Linux';
+
+  return { device, browser, os, isBot };
+}
+
+/**
+ * Trims and hard-caps any free-text field before it is forwarded, so a
+ * crafted referrer or label cannot bloat the log or inject line breaks into
+ * the notification email.
+ */
+function clean(value: unknown, max = 200): string {
+  if (typeof value !== 'string') return '';
+  return value.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
+}
+
+/* ------------------------------------------------------------------ */
+/* Endpoint                                                            */
+/* ------------------------------------------------------------------ */
 
 /** Events the site is allowed to send. Anything else is discarded. */
 const ALLOWED_EVENTS = new Set([
@@ -73,10 +155,6 @@ const MAX_BODY_BYTES = 4096;
 const recent = new Map<string, number>();
 
 let warnedAboutMissingWebhook = false;
-
-export const config = {
-  maxDuration: 10,
-};
 
 function header(req: IncomingMessage, name: string): string {
   const v = req.headers[name];

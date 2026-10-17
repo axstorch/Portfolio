@@ -206,6 +206,21 @@ manual switches: append `?track=0` to the URL, or run
 Override the classification for any single link with a `data-track` attribute,
 for example `data-track="resume_click"`.
 
+### Troubleshooting
+
+| Symptom | Cause | Fix |
+| --- | --- | --- |
+| `FUNCTION_INVOCATION_FAILED` on `/api/track` | The function threw before running, usually an import from outside `api/` | `api/track.ts` must stay self-contained. Confirm with `/api/health` |
+| `/api/health` also 500s | Problem is project wide, not in `track.ts` | Check the Node version and that `package.json` still has `"type": "module"` |
+| `404` on `/api/track` | The function is not in the deployed build | Confirm `api/track.ts` is committed and pushed; Vercel builds from Git |
+| Log warning: `TRACK_WEBHOOK_URL is not set` | Environment variable missing on this deployment | Add it, then **redeploy**: variables only apply to builds made after they are added |
+| Rows land but no email arrives | `alert` was false for that event, or Gmail's daily `MailApp` quota was hit | Consumer Gmail allows 100 sends/day |
+| Nothing at all, no request in the network tab | Do Not Track or Global Privacy Control is on, or an extension blocked it | Check `navigator.doNotTrack` in the console |
+
+`/api/health` is a three-line endpoint that exists purely to tell those first
+two apart. It imports nothing, so it isolates the function layer from
+`track.ts`.
+
 ---
 
 ## Links
