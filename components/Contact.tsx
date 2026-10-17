@@ -41,6 +41,11 @@ const Contact: React.FC = () => {
 
         <div className="mt-24 pt-8 border-t border-[#1C1C1C]/10 flex flex-wrap justify-between items-center gap-4 text-[10px] uppercase tracking-widest text-[#666]">
           <span>&copy; {new Date().getFullYear()} Akshat Saxena</span>
+          {/* Said out loud so the anonymous visit counts are not a surprise. */}
+          <span className="hidden md:inline normal-case tracking-normal">
+            No cookies, no visitor IDs. I only see anonymous counts: which pages
+            get read, and roughly where from.
+          </span>
           <a href="#bts" className="hover:opacity-60 transition-opacity">
             Behind the Scenes
           </a>

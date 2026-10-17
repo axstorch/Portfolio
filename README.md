@@ -97,11 +97,116 @@ them. If you ever build a class name by interpolation, add it to `safelist` in
 components/       # one component per section (Hero, CaseStudies, Experience, ...)
 constants.ts      # all site content: resume, experience, case studies, projects, skills
 types.ts          # TypeScript interfaces
+lib/analytics.ts  # cookie-less client tracker, one delegated click listener
+lib/useragent.ts  # UA parsing, shared by the client and the function
+api/track.ts      # Vercel function: filter bots, add geo, forward to the webhook
+apps-script/      # track.gs, the Google Sheet + Gmail webhook to deploy by hand
 public/assets/    # images
 index.html        # entry point, meta tags, JSON-LD Person schema
 ```
 
 **All content lives in `constants.ts`**: edit text there, not in the components.
+
+## Visit tracking
+
+Tells you when somebody opens the site, which case study they read, and when
+they download the resume. No cookies, no visitor IDs, no third-party analytics
+script, and no consent banner.
+
+### How it fits together
+
+```
+link click / route change          client, ~1 KB
+        |
+        v
+POST /api/track  ------------------>  Vercel function  (api/track.ts)
+   drops bots, adds country/city        |
+   from Vercel's edge headers,           v
+   collapses repeats          POST to TRACK_WEBHOOK_URL
+                                          |
+                                          v
+                              Google Apps Script  (apps-script/track.gs)
+                                 appends a Sheet row
+                                 emails you for the events that matter
+                                 optional daily digest
+```
+
+The function exists because the browser cannot do three of those jobs: it
+cannot be trusted to report its own device, it does not know where the visitor
+is, and it cannot tell a person from LinkedIn's link unfurler.
+
+### What you learn about a visitor
+
+| Field | Source | Example |
+| --- | --- | --- |
+| Event | client, validated against an allowlist | `case_study_view` |
+| Page | client route | `/work/traya` |
+| Time | server | `2026-10-17T11:58:24Z` |
+| Referrer | request header | `linkedin.com` |
+| Country, region, city | `x-vercel-ip-*` headers | `IN`, `Karnataka`, `Bengaluru` |
+| Device, browser, OS | parsed from the real UA | `Mobile`, `Safari`, `iOS` |
+| Screen, language, UTC offset | client | `390x844`, `en-IN`, `5.5` |
+
+You cannot get their name, email or employer. Nobody can, unless they type it
+into your Contact form.
+
+### What is deliberately not collected
+
+* **No cookies, no localStorage, no visitor ID.** Repeat visits are not linked.
+* **No IP address stored or forwarded.** The address is hashed in memory for
+  de-duplication only and dies with the function instance.
+* **No third-party scripts**, so no data leaves the site before it reaches your
+  own Apps Script.
+
+### Events
+
+| Event | Fires when | Email |
+| --- | --- | --- |
+| `page_view` | any route loads or changes | yes, once per visitor per minute |
+| `case_study_view` | a `/work/*` route is opened | yes |
+| `case_study_click` | "Read case study" is clicked | yes |
+| `resume_click` | any resume link is clicked | yes, subject line says RESUME DOWNLOADED |
+| `contact_click` | the email address is clicked | yes |
+| `document_click` | a certificate or PRD attachment is opened | sheet only |
+| `outbound_click` | LinkedIn, GitHub, a post | sheet only |
+
+Bots are dropped before anything is forwarded, including the ones that run
+JavaScript: Googlebot, Bingbot, LinkedInBot, Slackbot, WhatsApp and every
+link-preview agent. One visitor reloading, or a double click, produces one
+notification.
+
+### Setup
+
+1. **Apps Script.** Open <https://script.google.com>, create a project, paste
+   `apps-script/track.gs` into `Code.gs`, and set `ALERT_TO` at the top.
+   Deploy as a Web app with **Execute as: Me** and **Who has access: Anyone**
+   (not "Anyone with a Google account", because the request comes from Vercel
+   with no Google session). Copy the URL ending in `/exec`.
+2. **Vercel.** Add that URL as the environment variable `TRACK_WEBHOOK_URL`
+   (Settings > Environment Variables), then redeploy.
+3. **Daily digest.** Run `setupDigest()` once from the Apps Script editor for a
+   summary email each morning. `testEvent()` sends a fake visit so you can
+   check the format without waiting for a real one.
+
+Without `TRACK_WEBHOOK_URL` the site behaves exactly as before and the events
+are dropped with one warning in the logs.
+
+### Local development
+
+`vercel dev` serves the `/api/track` function, so tracking is testable locally.
+Under plain `npm run dev` the endpoint 404s, which is harmless: every call is
+fire-and-forget and swallows its errors.
+
+### Opting out
+
+Respecting Do Not Track and Global Privacy Control is built in, and so are two
+manual switches: append `?track=0` to the URL, or run
+`window.__PORTFOLIO_TRACKING__ = false` in the console.
+
+Override the classification for any single link with a `data-track` attribute,
+for example `data-track="resume_click"`.
+
+---
 
 ## Links
 
