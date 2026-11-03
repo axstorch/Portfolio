@@ -25,7 +25,7 @@ const Hero: React.FC = () => {
             </h1>
           </div>
 
-          {/*
+                    {/*
             Desktop only. The resume CTA lives in the nav, so the page carries
             exactly one of each. Bottom-aligned to the headline and flush to the
             right edge of the container.
@@ -37,13 +37,7 @@ const Hero: React.FC = () => {
             >
               View work <ArrowUpRight size={14} />
             </a>
-
-            <p className="max-w-[40ch] text-sm text-[#666] leading-[1.6] border-t border-[#1C1C1C]/10 pt-4">
-              {RESUME_DATA.tagline}
-            </p>
           </div>
-        </div>
-
         {/* Mobile: the same single CTA, stacked under the subline. */}
         <div className="lg:hidden mt-8">
           <a
