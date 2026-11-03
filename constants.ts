@@ -337,6 +337,7 @@ export const SKILLS_DATA: SkillCategory[] = [
   skills: [
     "SQL",
     "BigQuery",
+    "AI Tools",
     "Metabase",
     "Product analytics",
     "Funnel and cohort analysis",
