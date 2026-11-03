@@ -351,6 +351,7 @@ export const SKILLS_DATA: SkillCategory[] = [
     "Prompt engineering",
   ],
 },
+  ];
 
 export const CERTIFICATIONS_DATA: CertificationItem[] = [
   {
