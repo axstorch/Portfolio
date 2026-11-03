@@ -17,7 +17,6 @@ import {
 export const RESUME_DATA = {
   name: "Akshat Saxena",
   title: "Associate Product Manager",
-  tagline: "B2B internal tools, logistics & commerce | PRD to post-launch measurement",
   email: "akshatsaxena7974@gmail.com",
   phone: "+91 7974920243",
   location: "Pune, Maharashtra, India",
