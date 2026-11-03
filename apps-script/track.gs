@@ -9,28 +9,23 @@
  * ------------------------------------------------------------------
  * 1. Open https://script.google.com and create a project for yourself.
  * 2. Paste this whole file into Code.gs.
- * 3. Fill in ALERT_TO at the top with the Gmail address you want the alerts
- *    sent to (usually the account that owns the script).
+ * 3. Fill in ALERT_TO at the top.
  * 4. Deploy > New deployment > type "Web app".
  *      Execute as:      Me
- *      Who has access:  Anyone            <- must be Anyone, not "Anyone with
- *                                             a Google account", because the
- *                                             request comes from Vercel with
- *                                             no Google session attached.
- * 5. Copy the deployment URL. It looks like:
- *      https://script.google.com/macros/s/AKfycbXXXXXXXX/exec
- * 6. Put it in Vercel as the TRACK_WEBHOOK_URL environment variable
- *    (Settings > Environment Variables, then redeploy).
- * 7. Run setupDigest() once from the editor to get the daily summary email.
+ *      Who has access:  Anyone
+ * 5. Copy the deployment URL (ends in /exec) into Vercel as TRACK_WEBHOOK_URL.
+ * 6. Run setupDigest() once from the editor to get the daily summary email.
  *
- * The log is created once, on the first event: a spreadsheet named
- * "Portfolio visits" in your Drive, with a single tab called "Visits".
- * Every alert email links straight to it, and whereIsMyLog() emails the
- * link on demand, so there is never any hunting for the right file.
+ * UPDATING: after pasting a new version, use Deploy > Manage deployments >
+ * edit (pencil) > Version: New version > Deploy. That keeps the same /exec
+ * URL. "New deployment" would create a new URL and Vercel would keep calling
+ * the old code.
  *
- * To test before deploying the site: open the deployment URL in a browser tab.
- * The script returns a JSON ok. That only proves the script is live; the Sheet
- * is written on the first real visitor, or by running testEvent() from here.
+ * Three outcomes for every event:
+ *   - suspect (flagged by /api/track)  -> "Filtered" tab, no email
+ *   - exact repeat within a minute      -> dropped
+ *   - everything else                   -> "Visits" tab, email if alert-worthy,
+ *                                          unless a burst is in progress
  */
 
 /** Where the alerts go. Change this to your own address. */
@@ -39,15 +34,31 @@ var ALERT_TO = 'akshatsaxena7974@gmail.com';
 var CONFIG = {
   SPREADSHEET_NAME: 'Portfolio visits',
   SHEET_NAME: 'Visits',
+  /** Suspected bots land here, so you can audit the filter. */
+  FILTERED_SHEET_NAME: 'Filtered',
   DAILY_DIGEST: true,
-  /** Timezone for the digest, e.g. 'Asia/Kolkata'. */
   TIMEZONE: 'Asia/Kolkata',
 };
 
-/** Script property holding the log's file id, so it is only ever made once. */
+/**
+ * Burst guard. Scanners open a shared link from many cloud regions at once,
+ * so dozens of "page views" arrive within a couple of minutes. Rows are still
+ * written; only the emails pause. The window slides: it stays muted while
+ * the burst continues and reopens two minutes after it stops.
+ */
+var BURST = {
+  WINDOW_SECONDS: 120,
+  MAX_VIEW_ALERTS: 5,
+};
+
+/** Cross-instance de-duplication windows (Vercel's memory is per instance). */
+var DEDUPE_SECONDS = {
+  page_view: 60,
+  other: 300,
+};
+
 var SPREADSHEET_ID_KEY = 'LOG_SPREADSHEET_ID';
 
-/** Column order for the Sheet. Changing this changes the Sheet's headers. */
 var COLUMNS = [
   'Time',
   'Event',
@@ -65,6 +76,9 @@ var COLUMNS = [
   'Link text',
 ];
 
+/** The Filtered tab adds the reasons, so false positives are easy to spot. */
+var FILTERED_COLUMNS = COLUMNS.concat(['Signals', 'IP timezone']);
+
 var LABELS = {
   page_view: 'opened the home page',
   case_study_view: 'opened a case study',
@@ -77,7 +91,6 @@ var LABELS = {
   error: 'hit an error',
 };
 
-/** Human summary of where a visit came from. */
 function describeReferrer(ref) {
   if (!ref) return 'direct, no referrer (typed the link or a bookmark)';
   try {
@@ -97,7 +110,6 @@ function describeReferrer(ref) {
   }
 }
 
-/** Case study slug turned into a name, e.g. 'traya' becomes 'the Traya case study'. */
 function describePage(path) {
   if (!path || path === '/') return 'the home page';
   var m = path.match(/^\/work\/([a-z0-9-]+)/);
@@ -108,7 +120,6 @@ function describePage(path) {
   return path;
 }
 
-/** One-line summary for the email subject. */
 function subjectFor(d) {
   var who = [d.city, d.country].filter(Boolean).join(', ');
   if (d.event === 'resume_click') {
@@ -150,13 +161,15 @@ function buildEmail(d) {
     })
     .join('');
 
-  var accent = d.event === 'resume_click' ? '#B45309' : '#1C1C1C';
+  var isResume = d.event === 'resume_click';
+  var accent = isResume ? '#B45309' : '#1C1C1C';
+  var kicker = isResume ? 'Resume download' : 'Portfolio visit';
 
   return (
     '<div style="max-width:560px;font-family:Arial,sans-serif">' +
     '<div style="border-left:3px solid ' + accent + ';padding-left:16px;margin-bottom:20px">' +
     '<div style="font:12px Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;' +
-    'color:#888;margin-bottom:4px">' + accent + '</div>' +
+    'color:#888;margin-bottom:4px">' + kicker + '</div>' +
     '<div style="font:20px Georgia,serif;color:#1c1c1c">' + subjectFor(d) + '</div>' +
     '</div>' +
     '<table style="border-collapse:collapse;width:100%">' + tr + '</table>' +
@@ -168,8 +181,8 @@ function buildEmail(d) {
         'border-bottom:1px solid #1c1c1c;padding-bottom:2px;text-decoration:none">View the full log</a>'
       : '') +
     '<div style="margin-top:16px;font:11px Arial,sans-serif;color:#aaa">' +
-    'Sent by the Apps Script webhook behind /api/track. Bots are filtered out and ' +
-    'repeat visits within a few minutes are collapsed, so a quiet week means a quiet week.' +
+    'Sent by the Apps Script webhook behind /api/track. Bots and link scanners are ' +
+    'filtered out and repeat visits are collapsed, so a quiet week means a quiet week.' +
     '</div></div></div>'
   );
 }
@@ -185,11 +198,8 @@ function sendAlert(d) {
 
 /**
  * Finds the log, and creates it only if it genuinely does not exist yet.
- *
- * The id is cached in script properties, which is what stops a new
- * spreadsheet being created on every single event. Never call
- * SpreadsheetApp.getActiveSpreadsheet() for this: a script created from
- * script.google.com is standalone, so that call returns null every time.
+ * The id is cached in script properties so a new spreadsheet is never
+ * created per event.
  */
 function getSheet_() {
   var props = PropertiesService.getScriptProperties();
@@ -199,13 +209,10 @@ function getSheet_() {
     try {
       return ensureTab_(SpreadsheetApp.openById(id));
     } catch (e) {
-      // The log was deleted or moved, so the cached id is stale.
       props.deleteProperty(SPREADSHEET_ID_KEY);
     }
   }
 
-  // Second chance: adopt a log that already exists by name, so a redeploy
-  // cannot litter Drive with copies.
   try {
     var files = DriveApp.getFilesByName(CONFIG.SPREADSHEET_NAME);
     if (files.hasNext()) {
@@ -230,16 +237,9 @@ function ensureTab_(ss) {
   sheet = ss.insertSheet(CONFIG.SHEET_NAME);
   sheet.appendRow(COLUMNS);
   sheet.setFrozenRows(1);
-  sheet
-    .getRange(1, 1, 1, COLUMNS.length)
-    .setFontWeight('bold')
-    .setBackground('#F4F4F0');
+  sheet.getRange(1, 1, 1, COLUMNS.length).setFontWeight('bold').setBackground('#F4F4F0');
 
-  /*
-   * SpreadsheetApp.create() leaves an empty default tab behind. That is how a
-   * log ends up looking empty: the data is in the other tab, and the tab
-   * people open first is the blank one. Remove it.
-   */
+  // SpreadsheetApp.create() leaves an empty default tab behind. Remove it.
   var sheets = ss.getSheets();
   if (sheets.length > 1) {
     for (var i = 0; i < sheets.length; i++) {
@@ -252,7 +252,76 @@ function ensureTab_(ss) {
   return sheet;
 }
 
-/** Direct link to the log, so you never have to hunt through Drive again. */
+/** Returns the Filtered tab, creating it on the first suspect. */
+function getFilteredTab_(ss) {
+  var tab = ss.getSheetByName(CONFIG.FILTERED_SHEET_NAME);
+  if (tab) return tab;
+
+  tab = ss.insertSheet(CONFIG.FILTERED_SHEET_NAME);
+  tab.appendRow(FILTERED_COLUMNS);
+  tab.setFrozenRows(1);
+  tab.getRange(1, 1, 1, FILTERED_COLUMNS.length).setFontWeight('bold').setBackground('#F4F4F0');
+  return tab;
+}
+
+/** One Sheet row, in COLUMNS order. */
+function rowFor_(d) {
+  return [
+    new Date(d.ts || Date.now()),
+    LABELS[d.event] || d.event,
+    d.path || '/',
+    d.referrer || '',
+    d.country || '',
+    d.city || '',
+    d.device || '',
+    d.browser || '',
+    d.os || '',
+    d.screen || '',
+    d.language || '',
+    d.timezone || '',
+    d.target || '',
+    d.label || '',
+  ];
+}
+
+/**
+ * Cross-instance repeat and burst detection, shared through CacheService.
+ * Returns 'duplicate', 'burst' or 'ok'. If the lock cannot be taken in time,
+ * the event is treated as 'ok': logging a visit matters more than muting one.
+ */
+function checkRepeats_(d) {
+  var lock = LockService.getScriptLock();
+  if (!lock.tryLock(5000)) return 'ok';
+
+  try {
+    var cache = CacheService.getScriptCache();
+
+    // Fingerprint of the visit, hashed because cache keys are capped at 250 chars.
+    var fp = [
+      d.event, d.path, d.country, d.city, d.device, d.os,
+      d.browser, d.screen, d.language, d.timezone, d.target,
+    ].join('|');
+    var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, fp, Utilities.Charset.UTF_8);
+    var dupKey = 'dup:' + Utilities.base64Encode(digest);
+
+    if (cache.get(dupKey)) return 'duplicate';
+    cache.put(
+      dupKey,
+      '1',
+      d.event === 'page_view' ? DEDUPE_SECONDS.page_view : DEDUPE_SECONDS.other
+    );
+
+    // Only views count toward a burst. A resume click always emails.
+    if (d.event !== 'page_view' && d.event !== 'case_study_view') return 'ok';
+
+    var n = Number(cache.get('burst') || 0) + 1;
+    cache.put('burst', String(n), BURST.WINDOW_SECONDS);
+    return n > BURST.MAX_VIEW_ALERTS ? 'burst' : 'ok';
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 function logUrl() {
   try {
     var id = PropertiesService.getScriptProperties().getProperty(SPREADSHEET_ID_KEY);
@@ -263,7 +332,6 @@ function logUrl() {
   return '';
 }
 
-/** Run this from the editor to be told where the log ended up. */
 function whereIsMyLog() {
   var url = logUrl();
   MailApp.sendEmail({
@@ -281,40 +349,38 @@ function doPost(e) {
       return json({ ok: false, error: 'missing event' });
     }
 
-    getSheet_().appendRow([
-      new Date(d.ts || Date.now()),
-      LABELS[d.event] || d.event,
-      d.path || '/',
-      d.referrer || '',
-      d.country || '',
-      d.city || '',
-      d.device || '',
-      d.browser || '',
-      d.os || '',
-      d.screen || '',
-      d.language || '',
-      d.timezone || '',
-      d.target || '',
-      d.label || '',
-    ]);
+    var sheet = getSheet_();
 
-    if (d.alert) {
+    // Suspected scanner: keep a record for auditing, never email.
+    if (d.suspect) {
+      getFilteredTab_(sheet.getParent()).appendRow(
+        rowFor_(d).concat([d.signals || '', d.ipTimezone || ''])
+      );
+      return json({ ok: true, filtered: true });
+    }
+
+    var verdict = checkRepeats_(d);
+    if (verdict === 'duplicate') {
+      return json({ ok: true, duplicate: true });
+    }
+
+    sheet.appendRow(rowFor_(d));
+
+    if (d.alert && verdict !== 'burst') {
       try {
         sendAlert(d);
       } catch (mailErr) {
-        // A failed alert must not stop the visit being logged.
         console.error('alert failed: ' + mailErr);
       }
     }
 
-    return json({ ok: true });
+    return json({ ok: true, muted: verdict === 'burst' });
   } catch (err) {
     console.error(String(err));
     return json({ ok: false, error: String(err) });
   }
 }
 
-/** Opening the deployment URL in a browser, to confirm it is live. */
 function doGet() {
   return json({ ok: true, service: 'portfolio-track', events: Object.keys(LABELS) });
 }
@@ -326,18 +392,13 @@ function json(obj) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Daily summary                                                        */
+/* Daily summary (reads only the Visits tab, so suspects never count)  */
 /* ------------------------------------------------------------------ */
 
-/**
- * Run this once from the editor to schedule a daily email. Apps Script
- * triggers do not survive a change to this file's name, so keep the name.
- */
 function setupDigest() {
   ScriptApp.newTrigger('sendDailyDigest').timeBased().everyDays(1).atHour(9).create();
 }
 
-/** Delete the trigger first, or you will get the digest twice a day. */
 function removeDigest() {
   var triggers = ScriptApp.getProjectTriggers();
   for (var i = 0; i < triggers.length; i++) {
@@ -347,12 +408,6 @@ function removeDigest() {
   }
 }
 
-/**
- * Yesterday in one email: total visits, every resume download, which case
- * study got read, and where the traffic came from. This is the email that
- * tells you whether a recruiter actually looked, which single-event alerts
- * cannot do.
- */
 function sendDailyDigest() {
   var sheet = getSheet_();
   var rows = sheet.getDataRange().getValues();
@@ -380,10 +435,10 @@ function sendDailyDigest() {
 
     var event = String(rows[i][col['Event']]);
     var path = String(rows[i][col['Page']]);
+    var source = describeReferrer(String(rows[i][col['Referrer']] || ''));
 
     pages[path] = (pages[path] || 0) + 1;
-    sources[describeReferrer(String(rows[i][col['Referrer']] || ''))] =
-      (sources[describeReferrer(String(rows[i][col['Referrer']] || ''))] || 0) + 1;
+    sources[source] = (sources[source] || 0) + 1;
     var country = String(rows[i][col['Country']] || 'unknown');
     countries[country] = (countries[country] || 0) + 1;
 
@@ -391,7 +446,7 @@ function sendDailyDigest() {
       resumes.push({
         when: when,
         where: [rows[i][col['City']], rows[i][col['Country']]].filter(Boolean).join(', '),
-        via: describeReferrer(String(rows[i][col['Referrer']] || '')),
+        via: source,
         device: [rows[i][col['Device']], rows[i][col['OS']], rows[i][col['Browser']]]
           .filter(Boolean)
           .join(' / '),
@@ -453,7 +508,11 @@ function sendDailyDigest() {
   });
 }
 
-/** Manual test: writes a fake visit and emails it. Run from the editor. */
+/* ------------------------------------------------------------------ */
+/* Manual tests, run from the editor                                    */
+/* ------------------------------------------------------------------ */
+
+/** A real-looking visit: lands in Visits and emails you. */
 function testEvent() {
   doPost({
     postData: {
@@ -474,6 +533,32 @@ function testEvent() {
         timezone: '5.5',
         target: 'resume',
         label: 'Resume',
+      }),
+    },
+  });
+}
+
+/** A scanner-looking visit: lands in Filtered, no email. */
+function testSuspectEvent() {
+  doPost({
+    postData: {
+      contents: JSON.stringify({
+        event: 'page_view',
+        alert: false,
+        suspect: true,
+        signals: 'tz-mismatch,datacentre-town',
+        ipTimezone: 'America/New_York',
+        ts: Date.now(),
+        path: '/',
+        country: 'US',
+        region: 'VA',
+        city: 'Boydton',
+        device: 'Desktop',
+        browser: 'Chrome',
+        os: 'Windows',
+        screen: '1920x1080',
+        language: 'en-US',
+        timezone: '-7',
       }),
     },
   });
