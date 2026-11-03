@@ -2,17 +2,21 @@
  * POST /api/track
  *
  * The tracker has no backend of its own, so this endpoint is it. It exists to
- * do four things the browser cannot do for itself:
+ * do the things the browser cannot do for itself:
  *
  *   1. Drop bots and crawlers, using the real UA header rather than
  *      navigator.userAgent, so link unfurlers never send you an email.
- *   2. Attach geography, which only Vercel's edge knows (country, region,
- *      city). This is how you learn "someone from Bengaluru opened your
- *      Traya case study on an iPhone".
- *   3. Stop one visitor generating a burst of identical alerts. Each function
- *      instance keeps a short-lived memory of recent sends, so a reload loop
- *      or a double click produces one notification.
- *   4. Forward everything to the Google Apps Script webhook that owns the
+ *   2. Catch the bots that pretend to be Chrome. Link-safety scanners (email,
+ *      LinkedIn, applicant tracking systems) open shared links from cloud data
+ *      centres in real headless Chrome with a normal UA. Their giveaway is that
+ *      the browser's timezone does not match where the IP actually is, or
+ *      the IP sits in a data-centre town. Those visits are forwarded as
+ *      `suspect`, logged to a separate tab, and never emailed.
+ *   3. Attach geography, which only Vercel's edge knows (country, region,
+ *      city).
+ *   4. Stop one visitor generating a burst of identical alerts (per instance;
+ *      the Apps Script repeats this across instances).
+ *   5. Forward everything to the Google Apps Script webhook that owns the
  *      Sheet and the Gmail notification.
  *
  * Privacy: no cookies, no visitor ID, no IP address is stored or forwarded.
@@ -21,15 +25,15 @@
  * function.
  *
  * It always answers 204, even when the webhook is missing or broken, because
- * the site must keep working when the tracker does not.
+ * the site must keep working when the tracker does not. The X-Track response
+ * header says why each request ended where it did.
  *
  * ------------------------------------------------------------------
  * THIS FILE IS DELIBERATELY SELF-CONTAINED. DO NOT IMPORT ../lib/*.
  * ------------------------------------------------------------------
- * The first version imported the UA parser from ../lib/useragent. Vercel
- * builds a function from its own entrypoint and does not reliably bundle
- * files from outside api/, so the import failed to resolve and every single
- * request died with FUNCTION_INVOCATION_FAILED. The client keeps using
+ * Vercel builds a function from its own entrypoint and does not reliably
+ * bundle files from outside api/, so an import from ../lib made every request
+ * die with FUNCTION_INVOCATION_FAILED. The client keeps using
  * lib/useragent.ts, so the two copies below can drift apart; if you change
  * the bot pattern here, change it there too.
  */
@@ -44,9 +48,6 @@ import type { IncomingMessage, ServerResponse } from 'node:http';
 /**
  * Crawlers, link unfurlers and monitoring agents. A visit from these is not a
  * person reading the site, so it must never trigger an email.
- *
- * Slackbot, WhatsApp and LinkedInBot appear because LinkedIn, Slack and
- * WhatsApp fetch a URL whenever someone shares it, which is not a visit.
  */
 const BOT_PATTERN =
   /bot\b|bot_|crawler|spider|crawling|slurp|scrapy|preview|facebookexternalhit|whatsapp|telegrambot|slackbot|discordbot|linkedinbot|embedly|quora link preview|pinterest|vkshare|skypeuripreview|headless|phantomjs|chrome-lighthouse|ahrefs|semrush|mj12|dotbot|petalbot|applebot|gptbot|chatgpt-user|perplexity|claudebot|ccbot|dataprovider|pingdom|gtmetrix|webpagetest/i;
@@ -107,6 +108,63 @@ function clean(value: unknown, max = 200): string {
   return value.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, max);
 }
 
+/** Vercel URL-encodes geo headers ("Des%20Moines"). */
+function decodeHeader(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Bot heuristics for browsers that claim to be Chrome                 */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Small towns whose internet traffic is overwhelmingly cloud data centres
+ * (Microsoft Azure, AWS, Google). Large cities that happen to host data
+ * centres (San Jose, Des Moines, Dublin) are deliberately left out: real
+ * people live there, and the timezone check catches the scanners anyway.
+ * Lower case, compared against the decoded city.
+ */
+const DATACENTRE_TOWNS = new Set([
+  'boydton',
+  'moses lake',
+  'quincy',
+  'dulles town',
+  'ashburn',
+  'the dalles',
+  'prineville',
+  'council bluffs',
+  'cheyenne',
+  'san antonio de los altos',
+]);
+
+/** Signals the client is allowed to report. Anything else is ignored. */
+const CLIENT_SIGNALS = new Set(['webdriver', 'no-languages']);
+
+/**
+ * Current UTC offset of an IANA timezone in hours, e.g. "Asia/Kolkata" -> 5.5.
+ * Uses the current date, so daylight saving is handled the same way the
+ * visitor's browser handles it.
+ */
+function offsetHours(tz: string, at = new Date()): number | null {
+  try {
+    const part =
+      new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'longOffset' })
+        .formatToParts(at)
+        .find((p) => p.type === 'timeZoneName')?.value ?? '';
+    if (part === 'GMT' || part === 'UTC') return 0;
+    const m = part.match(/(?:GMT|UTC)([+-])(\d{1,2})(?::(\d{2}))?/);
+    if (!m) return null;
+    const hours = Number(m[2]) + Number(m[3] || 0) / 60;
+    return m[1] === '-' ? -hours : hours;
+  } catch {
+    return null;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /* Endpoint                                                            */
 /* ------------------------------------------------------------------ */
@@ -123,11 +181,7 @@ const ALLOWED_EVENTS = new Set([
   'error',
 ]);
 
-/**
- * Events worth an immediate email. Page views are included because the whole
- * point is to know when a human lands on the site, and the de-duplication
- * window below keeps that from becoming noise.
- */
+/** Events worth an immediate email, unless the visit is a suspect. */
 const ALERT_EVENTS = new Set([
   'page_view',
   'case_study_click',
@@ -166,10 +220,8 @@ async function readBody(req: IncomingMessage): Promise<string> {
     let size = 0;
     const chunks: Buffer[] = [];
     req.on('data', (chunk: Buffer) => {
-      // Node hands over Buffers, but a string chunk must not throw here.
       const buf = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
       size += buf.length;
-      // Anything past the cap is a mistake or an attack, not a real event.
       if (size > MAX_BODY_BYTES) {
         reject(new Error('body too large'));
         req.destroy();
@@ -183,7 +235,6 @@ async function readBody(req: IncomingMessage): Promise<string> {
 }
 
 function prune(now: number): void {
-  // Cheap guard against unbounded growth on a long-lived instance.
   if (recent.size < 2000) return;
   for (const [key, at] of recent) {
     if (now - at > DEDUPE_WINDOW_MS) recent.delete(key);
@@ -191,11 +242,8 @@ function prune(now: number): void {
 }
 
 /**
- * Ends the request and records *why*, in an X-Track header.
- *
- * Without this, a misconfigured webhook was indistinguishable from a working
- * one: both answered 204, so "no email" gave no clue where the event died.
- * The header reveals only whether the webhook is configured, never the URL.
+ * Ends the request and records *why*, in an X-Track header. The header
+ * reveals only the outcome, never the webhook URL.
  */
 function respond(res: ServerResponse, code: number, why: string): void {
   res.setHeader('X-Track', why);
@@ -204,15 +252,12 @@ function respond(res: ServerResponse, code: number, why: string): void {
 }
 
 function firstForwardedIp(req: IncomingMessage): string {
-  // Vercel sets x-forwarded-for to the visitor's address. x-real-ip is a
-  // fallback for local `vercel dev` and proxied setups.
   const fwd = header(req, 'x-forwarded-for');
   if (fwd) return fwd.split(',')[0].trim();
   return header(req, 'x-real-ip') || header(req, 'x-vercel-forwarded-for');
 }
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
-  // Nothing about a visit should ever be cached.
   res.setHeader('Cache-Control', 'no-store');
 
   if (req.method !== 'POST') {
@@ -220,8 +265,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return;
   }
 
-  // Only this site's own pages may write to the endpoint. Without this,
-  // anyone could POST to it from their own site and fill your inbox.
+  // Only this site's own pages may write to the endpoint.
   const origin = header(req, 'origin');
   if (origin) {
     try {
@@ -264,13 +308,60 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return;
   }
 
+  /*
+   * The client only sends after a trusted mouse, touch, wheel or key event.
+   * A request without the flag is either a scanner that never interacted
+   * (it should not have sent anything) or a script POSTing directly.
+   */
+  if (body.interacted !== true) {
+    respond(res, 204, 'no-interaction');
+    return;
+  }
+
+  const signals = clean(body.signals, 80)
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => CLIENT_SIGNALS.has(s));
+
+  // Puppeteer, Playwright and Selenium set navigator.webdriver. Certain: drop.
+  if (signals.includes('webdriver')) {
+    respond(res, 204, 'automation-filtered');
+    return;
+  }
+
+  // Geography from Vercel's edge. Absent on localhost.
+  const country = clean(decodeHeader(header(req, 'x-vercel-ip-country')), 8);
+  const region = clean(decodeHeader(header(req, 'x-vercel-ip-country-region')), 60);
+  const city = clean(decodeHeader(header(req, 'x-vercel-ip-city')), 60);
+  const ipTimezone = clean(decodeHeader(header(req, 'x-vercel-ip-timezone')), 60);
+
+  /*
+   * Scanners run in cloud regions but their browsers all report the same
+   * default timezone: in your sheet, Virginia and Iowa visits claimed UTC-7.
+   * A person's laptop clock agrees with where their IP is. VPN users and
+   * travellers can trip this, which is why it marks a suspect for the
+   * Filtered tab instead of discarding the event.
+   */
+  const timezone = clean(body.timezone, 10);
+  const clientOffset = Number(timezone);
+  const ipOffset = ipTimezone ? offsetHours(ipTimezone) : null;
+  if (
+    ipOffset !== null &&
+    timezone !== '' &&
+    Number.isFinite(clientOffset) &&
+    Math.abs(ipOffset - clientOffset) >= 1
+  ) {
+    signals.push('tz-mismatch');
+  }
+
+  if (DATACENTRE_TOWNS.has(city.toLowerCase())) signals.push('datacentre-town');
+
+  const suspect = signals.length > 0;
+
   const ip = firstForwardedIp(req);
-  // Digest, not the address. This is the de-duplication key and nothing else.
   const visitorKey = ip ? createHash('sha256').update(ip).digest('hex').slice(0, 16) : 'no-ip';
 
   const path = clean(body.path, 120) || '/';
-  // A case study route is reported under its own name so the report can lead
-  // with it: "opened the Traya case study".
   const isCaseStudy = path.startsWith('/work/');
   const reportedEvent = isCaseStudy && event === 'page_view' ? 'case_study_view' : event;
 
@@ -286,28 +377,28 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   }
   recent.set(key, now);
 
-  const referrer =
-    clean(body.referrer, 300) || header(req, 'referer').slice(0, 300) || '';
+  const referrer = clean(body.referrer, 300) || header(req, 'referer').slice(0, 300) || '';
 
   const payload = {
-    v: 1,
+    v: 2,
     event: reportedEvent,
-    alert: ALERT_EVENTS.has(reportedEvent),
+    alert: !suspect && ALERT_EVENTS.has(reportedEvent),
+    suspect,
+    signals: signals.join(','),
+    ipTimezone,
     ts: new Date(now).toISOString(),
     path,
     referrer,
-    // Geography from Vercel's edge. Absent on localhost, and country can be
-    // "XX" for a VPN or an unresolvable address, which is worth knowing.
-    country: clean(header(req, 'x-vercel-ip-country'), 8),
-    region: clean(header(req, 'x-vercel-ip-country-region'), 60),
-    city: clean(header(req, 'x-vercel-ip-city'), 60),
+    country,
+    region,
+    city,
     device: info.device,
     browser: info.browser,
     os: info.os,
     screen: clean(body.screen, 20),
     viewport: clean(body.viewport, 20),
     language: clean(body.language, 20),
-    timezone: clean(body.timezone, 10),
+    timezone,
     target: clean(body.target, 120),
     label: clean(body.label, 80),
     durationMs: typeof body.durationMs === 'number' ? Math.round(body.durationMs) : 0,
@@ -328,17 +419,9 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-      // A slow Sheet append must not hold the visitor's request open.
       signal: AbortSignal.timeout(4000),
     });
 
-    /*
-     * fetch only rejects on a network failure. A webhook that answers 404 or
-     * 403 resolves happily, which is exactly what happens when the URL points
-     * at the /dev version instead of /exec, or when the deployment is not
-     * shared with "Anyone". Those two mistakes used to look identical to
-     * success from out here, so they are now named explicitly.
-     */
     if (!delivered.ok) {
       console.error(
         `[track] webhook responded ${delivered.status}. Check that TRACK_WEBHOOK_URL ends in /exec ` +
@@ -353,5 +436,5 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     return;
   }
 
-  respond(res, 204, 'forwarded');
+  respond(res, 204, suspect ? `forwarded-suspect:${signals.join(',')}` : 'forwarded');
 }
