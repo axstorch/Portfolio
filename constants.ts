@@ -313,35 +313,44 @@ export const PROJECTS_DATA: ProjectItem[] = ALSO_BUILT.map((p) => ({
 }));
 
 export const SKILLS_DATA: SkillCategory[] = [
-  {
-    category: "Product",
-    skills: [
-      "PRD writing",
-      "Requirements",
-      "Prioritisation",
-      "User research",
-      "Roadmapping",
-      "Root cause analysis",
-      "Agile",
-    ],
-  },
-  {
-    category: "Data & Tools",
-    skills: [
-      "SQL",
-      "BigQuery",
-      "Metabase",
-      "MongoDB",
-      "Jira",
-      "Figma/FigJam",
-      "Excel",
-      "n8n",
-      "LLM workflows",
-      "Funnel and cohort analysis",
-      "A/B test design",
-    ],
-  },
-];
+{
+  category: "Product",
+  skills: [
+    "Product strategy",
+    "Product discovery",
+    "PRD writing",
+    "Requirements",
+    "Prioritisation (RICE)",
+    "User research",
+    "User journey mapping",
+    "MVP scoping",
+    "Roadmapping",
+    "Root cause analysis",
+    "Metrics & KPIs",
+    "Go-to-market",
+    "Stakeholder management",
+    "Agile/Scrum",
+  ],
+},
+{
+  category: "Data & Tools",
+  skills: [
+    "SQL",
+    "BigQuery",
+    "Metabase",
+    "Product analytics",
+    "Funnel and cohort analysis",
+    "A/B test design",
+    "Statistical significance",
+    "Jira",
+    "Notion",
+    "Figma/FigJam",
+    "Wireframing",
+    "n8n",
+    "LLM workflows",
+    "Prompt engineering",
+  ],
+},
 
 export const CERTIFICATIONS_DATA: CertificationItem[] = [
   {
