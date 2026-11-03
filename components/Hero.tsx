@@ -10,7 +10,10 @@ const Hero: React.FC = () => {
       id="about"
       tone="light"
       aria-label="Introduction"
-      className="min-h-screen flex flex-col justify-between"
+      /* Full-screen, spread-out layout on desktop only. On a phone the content
+         is shorter than the screen, and justify-between turned the leftover
+         height into large gaps between the headline, image and footer row. */
+      className="lg:min-h-screen lg:flex lg:flex-col lg:justify-between"
       style={{ paddingTop: NAV_HEIGHT + 48 }}
     >
       <Container>
@@ -25,7 +28,7 @@ const Hero: React.FC = () => {
             </h1>
           </div>
 
-                    {/*
+          {/*
             Desktop only. The resume CTA lives in the nav, so the page carries
             exactly one of each. Bottom-aligned to the headline and flush to the
             right edge of the container.
@@ -38,8 +41,10 @@ const Hero: React.FC = () => {
               View work <ArrowUpRight size={14} />
             </a>
           </div>
-        {/* Mobile: the same single CTA, stacked under the subline. */}
-        <div className="lg:hidden mt-8">
+        </div>
+
+        {/* Mobile: the same single CTA, stacked under the headline. */}
+        <div className="lg:hidden mt-2">
           <a
             href="#work"
             className="inline-flex items-center justify-center gap-2 px-7 py-3.5 bg-[#1C1C1C] text-[#F4F4F0] rounded-full text-xs uppercase tracking-widest"
@@ -49,25 +54,40 @@ const Hero: React.FC = () => {
         </div>
       </Container>
 
-      <Container className="mt-12">
-      <div className="w-full h-[34vh] md:h-[50vh] relative rounded-2xl overflow-hidden bg-stone-300">
-        <img
-          src="/assets/Perfect_banner-1024w.webp"
-          srcSet="
-            /assets/Perfect_banner-640w.webp   640w,
-            /assets/Perfect_banner-1024w.webp 1024w,
-            /assets/Perfect_banner-1600w.webp 1600w,
-            /assets/Perfect_banner-2560w.webp 2560w
-          "
-          sizes="(max-width: 768px) 100vw, (max-width: 1664px) 100vw, 1472px"
-          alt="Akshat Saxena at a product pitch event"
-          width={1024}
-          height={390}
-          fetchPriority="high"
-          decoding="async"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      </div>
+      <Container className="mt-8 lg:mt-12">
+        {/*
+          Phones get a 5:4 box showing only the speaker panel; tablets and up
+          get the full three-panel collage. The <picture> swaps the file, so
+          phones never download the wide collage at all.
+        */}
+        <div className="w-full aspect-[5/4] md:aspect-auto md:h-[50vh] relative rounded-2xl overflow-hidden bg-stone-300">
+          <picture>
+            <source
+              media="(max-width: 767px)"
+              srcSet="
+                /assets/Perfect_banner-mobile-640w.webp 640w,
+                /assets/Perfect_banner-mobile-960w.webp 960w
+              "
+              sizes="100vw"
+            />
+            <img
+              src="/assets/Perfect_banner-1024w.webp"
+              srcSet="
+                /assets/Perfect_banner-640w.webp   640w,
+                /assets/Perfect_banner-1024w.webp 1024w,
+                /assets/Perfect_banner-1600w.webp 1600w,
+                /assets/Perfect_banner-2560w.webp 2560w
+              "
+              sizes="(max-width: 1664px) 100vw, 1472px"
+              alt="Akshat Saxena at a product pitch event"
+              width={1024}
+              height={390}
+              fetchPriority="high"
+              decoding="async"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </picture>
+        </div>
       </Container>
 
       <Container className="mt-8">
