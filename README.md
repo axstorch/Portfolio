@@ -2,7 +2,7 @@
 
 Personal portfolio site for my applications to **Associate Product Manager** roles.
 
-> **Live site:** add your deployed URL here.
+> **Live site:** https://akshat-saxena-portfolio.vercel.app/ .
 
 Computer Science graduate (B.Tech '26) with two product internships across **B2B internal
 tools** and **logistics**: AmberStudent (CRM & CMS) and Swift Logistics. I work from SQL
